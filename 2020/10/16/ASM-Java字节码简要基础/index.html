@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、JVM的执行原理1、从逆波兰式说起逆波兰式是一种数学表达式方法，可以将四则运算转换成一种不需要括号即可表达优先级的表达式。 举例来说，数学表达式3+4*5转换成逆波兰式就是345*+。其中的操作符代表前面两个结果的操作，比如*操作即为4*5，+操作则是 3 + (4*5)，因为+前面的两个结果分别是3和*操作的结果。 逆波兰式从计算机语言的角度来讲，是一颗语法树的后序遍历结果。它的好处在于，可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ASM) 一、Java字节码简要基础知识">
+<meta property="og:url" content="http://example.com/2020/10/16/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、JVM的执行原理1、从逆波兰式说起逆波兰式是一种数学表达式方法，可以将四则运算转换成一种不需要括号即可表达优先级的表达式。 举例来说，数学表达式3+4*5转换成逆波兰式就是345*+。其中的操作符代表前面两个结果的操作，比如*操作即为4*5，+操作则是 3 + (4*5)，因为+前面的两个结果分别是3和*操作的结果。 逆波兰式从计算机语言的角度来讲，是一颗语法树的后序遍历结果。它的好处在于，可">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-16T04:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-23T09:21:49.018Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ASM,Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/16/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>(ASM) 一、Java字节码简要基础知识 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/16/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ASM) 一、Java字节码简要基础知识
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-16 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-16T12:00:00+08:00">2020-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-23 17:21:49" itemprop="dateModified" datetime="2020-10-23T17:21:49+08:00">2020-10-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、JVM的执行原理"><a href="#一、JVM的执行原理" class="headerlink" title="一、JVM的执行原理"></a>一、JVM的执行原理</h2><h3 id="1、从逆波兰式说起"><a href="#1、从逆波兰式说起" class="headerlink" title="1、从逆波兰式说起"></a>1、从逆波兰式说起</h3><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E7%A4%BA%E6%B3%95">逆波兰式</a>是一种数学表达式方法，可以将四则运算转换成一种不需要括号即可表达优先级的表达式。</p>
+<p>举例来说，数学表达式<code>3+4*5</code>转换成逆波兰式就是<code>345*+</code>。其中的操作符代表前面两个结果的操作，比如<code>*</code>操作即为<code>4*5</code>，<code>+</code>操作则是 <code>3 + (4*5)</code>，因为<code>+</code>前面的两个结果分别是3和<code>*</code>操作的结果。</p>
+<p>逆波兰式从计算机语言的角度来讲，是一颗语法树的后序遍历结果。它的好处在于，可以方便的利用栈操作来进行四则运算。同样以<code>345*+</code>的逆波兰式为例，其计算顺序如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">push 3 -&gt; [3]</span><br><span class="line">push 4 -&gt; [3,4]</span><br><span class="line">push 5 -&gt; [3,4,5]</span><br><span class="line">invoke * -&gt; [3,20]</span><br><span class="line">invoke + -&gt; [23]</span><br></pre></td></tr></table></figure>
+<p>左侧是操作，右侧是栈中数据。根据逆波兰式进行运算即可得到最终结果23。</p>
+<p><em>注意！</em>让我们给栈的操作换一个名字，就可以得到如下的程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ICONST_3</span><br><span class="line">ICONST_4</span><br><span class="line">ICONST_5</span><br><span class="line">IMUL</span><br><span class="line">IADD</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码就是一段Java的字节码指令，其执行结果同样是23。</p>
+<h3 id="2、JVM字节码的执行"><a href="#2、JVM字节码的执行" class="headerlink" title="2、JVM字节码的执行"></a>2、JVM字节码的执行</h3><p>经过上面的例子，相信读者应当对Java的执行原理有了一个比较直观的认识。有一定Java基础知识的同学应当已经联想到了Java中的栈的概念。</p>
+<p>简单来讲，JVM执行字节码文件，就是在一个栈上执行不同的字节码指令。当然用于工业实践的JVM必然还有更多神奇的优化，但是其根本原理是不会改变的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这里容易出现一种误解，即字节码就是一个栈。</span><br><span class="line"></span><br><span class="line">一个字节码文件描述的是“对操作数栈的操作”（当然还包含其它内容），实际上的操作数栈只存在于内存和你我的脑海中。所以在编写字节码文件，尤其是遇到涉及分支、循环结构的程序时，必须考虑好栈的内容是什么样的。否则必然会出错。</span><br></pre></td></tr></table></figure>
+
+<p>在JVM的栈帧中，包含有本地变量表、操作数栈、程序计数器、返回地址等部分。在我们编写字节码时，需要关注的主要在于：</p>
+<ul>
+<li>本地变量表(Local Variable Table)，我们需要将用到的本地变量记录在本地变量表的对应槽位(slot)中。</li>
+<li>操作数栈，我们的字节码程序描述的就是对操作数栈的操作。也是我们程序实际运行的位置。</li>
+<li>程序计数器，我们需要用Label来标记程序指令对应的计数器位置，通过控制程序计数器来实现分支、循环等逻辑控制。</li>
+</ul>
+<h2 id="二、字节码文件内容概述"><a href="#二、字节码文件内容概述" class="headerlink" title="二、字节码文件内容概述"></a>二、字节码文件内容概述</h2><h3 id="1、字节码查看"><a href="#1、字节码查看" class="headerlink" title="1、字节码查看"></a>1、字节码查看</h3><p>字节码是以二进制方式存储的，显然的，我们不可能用人脑去解析二进制来查看字节码。</p>
+<p>Java自带了class文件的查看工具，可以将class文件转换成字节码指令文本进行查看。我们以刚刚写的四则运算案例为例。完整的Java代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class AsmExample &#123;</span><br><span class="line"></span><br><span class="line">    public int calc() &#123;</span><br><span class="line">        int a &#x3D; 3;</span><br><span class="line">        int b &#x3D; 4;</span><br><span class="line">        int c &#x3D; 5;</span><br><span class="line">        return (a+b*c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以注意到这里为3、4、5分别赋值了一个变量，是因为<code>3+4*5</code>这种表达式在编译时会被直接编译为23的常量，无法体现预期效果。</p>
+<p>该文件编译得到AsmExample.class文件，打开命令行终端，执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -v -l -p -s AsmExample.class</span><br></pre></td></tr></table></figure>
+
+<p>具体的几个参数的作用，可以用<code>javap -help</code>自行查看。总之回车之后，终端中即可显示出该class文件的字节码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">Classfile &#x2F;Users&#x2F;didi&#x2F;code&#x2F;java-test&#x2F;target&#x2F;test-classes&#x2F;com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample.class</span><br><span class="line">  Last modified 2020-10-16; size 432 bytes</span><br><span class="line">  MD5 checksum 9a1851023d512efc7e2f91bc2a65ada0</span><br><span class="line">  Compiled from &quot;AsmExample.java&quot;</span><br><span class="line">public class com.xiaojukeji.aya.AsmExample</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br><span class="line">Constant pool:</span><br><span class="line">   #1 &#x3D; Methodref          #3.#19         &#x2F;&#x2F; java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 &#x3D; Class              #20            &#x2F;&#x2F; com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">   #3 &#x3D; Class              #21            &#x2F;&#x2F; java&#x2F;lang&#x2F;Object</span><br><span class="line">   #4 &#x3D; Utf8               &lt;init&gt;</span><br><span class="line">   #5 &#x3D; Utf8               ()V</span><br><span class="line">   #6 &#x3D; Utf8               Code</span><br><span class="line">   #7 &#x3D; Utf8               LineNumberTable</span><br><span class="line">   #8 &#x3D; Utf8               LocalVariableTable</span><br><span class="line">   #9 &#x3D; Utf8               this</span><br><span class="line">  #10 &#x3D; Utf8               Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">  #11 &#x3D; Utf8               calc</span><br><span class="line">  #12 &#x3D; Utf8               ()I</span><br><span class="line">  #13 &#x3D; Utf8               a</span><br><span class="line">  #14 &#x3D; Utf8               I</span><br><span class="line">  #15 &#x3D; Utf8               b</span><br><span class="line">  #16 &#x3D; Utf8               c</span><br><span class="line">  #17 &#x3D; Utf8               SourceFile</span><br><span class="line">  #18 &#x3D; Utf8               AsmExample.java</span><br><span class="line">  #19 &#x3D; NameAndType        #4:#5          &#x2F;&#x2F; &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #20 &#x3D; Utf8               com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">  #21 &#x3D; Utf8               java&#x2F;lang&#x2F;Object</span><br><span class="line">&#123;</span><br><span class="line">  public com.xiaojukeji.aya.AsmExample();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;1, locals&#x3D;1, args_size&#x3D;1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  &#x2F;&#x2F; Method java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 3: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line"></span><br><span class="line">  public int calc();</span><br><span class="line">    descriptor: ()I</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;3, locals&#x3D;4, args_size&#x3D;1</span><br><span class="line">         0: iconst_3</span><br><span class="line">         1: istore_1</span><br><span class="line">         2: iconst_4</span><br><span class="line">         3: istore_2</span><br><span class="line">         4: iconst_5</span><br><span class="line">         5: istore_3</span><br><span class="line">         6: iload_1</span><br><span class="line">         7: iload_2</span><br><span class="line">         8: iload_3</span><br><span class="line">         9: imul</span><br><span class="line">        10: iadd</span><br><span class="line">        11: ireturn</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 2</span><br><span class="line">        line 8: 4</span><br><span class="line">        line 9: 6</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0      12     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">            2      10     1     a   I</span><br><span class="line">            4       8     2     b   I</span><br><span class="line">            6       6     3     c   I</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我相信足够熟悉Java的读者已经能够大致看懂这样的字节码文件了。下面会以此字节码文件为例对内容进行说明。</p>
+<h3 id="2、字节码文件分块详解"><a href="#2、字节码文件分块详解" class="headerlink" title="2、字节码文件分块详解"></a>2、字节码文件分块详解</h3><p>案例的字节码文件可以明显的分成几个部分：</p>
+<ul>
+<li>类信息的声明，包括完整名称，版本，访问控制等信息。</li>
+<li>常量池，这一块通常不需要自行控制，但是仔细去看能品出不少有意思的东西。</li>
+<li>构造方法，本类中包含一个无参构造方法。</li>
+<li>成员方法，本类中包含一个public int clac()方法。</li>
+<li>在方法中，包含执行字节码Code部分， LocalVariableTable本地变量表部分。其实应该还有一部分StackMap，但是在本案例中没有涉及。</li>
+<li>LineNumberTable是从源码编译到字节码保存源码代码行数信息的debug信息，在输出错误栈的时候能够精确到出错的行数就是它的功劳。在我们整篇教程中都不会用到，所以就忽略掉吧！</li>
+</ul>
+<p>下面一个一个的来分析这些部分的内容。</p>
+<h4 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public class com.xiaojukeji.aya.AsmExample</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br></pre></td></tr></table></figure>
+
+<p>在这一部分，首先可以看到类名称，如果该类有继承，还会包含extends xxx的信息。</p>
+<p>之后是minor version 和 major version，表示支持的Java版本，52代表Java8。前后版本依次加减1自行类推。</p>
+<p>flags是访问控制信息，可以看到ACC_PUBLIC和ACC_SUPER，表示这是一个public的类。ACC_SUPER用来表示如何调用父类的方法，涉及到后续的invokespecial和invokeonvirtual等调用方法的指令。</p>
+<h4 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Constant pool:</span><br><span class="line">   #1 &#x3D; Methodref          #3.#19         &#x2F;&#x2F; java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 &#x3D; Class              #20            &#x2F;&#x2F; com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">   #3 &#x3D; Class              #21            &#x2F;&#x2F; java&#x2F;lang&#x2F;Object</span><br><span class="line">   #4 &#x3D; Utf8               &lt;init&gt;</span><br><span class="line">   #5 &#x3D; Utf8               ()V</span><br><span class="line">   #6 &#x3D; Utf8               Code</span><br><span class="line">   #7 &#x3D; Utf8               LineNumberTable</span><br><span class="line">   #8 &#x3D; Utf8               LocalVariableTable</span><br><span class="line">   #9 &#x3D; Utf8               this</span><br><span class="line">  #10 &#x3D; Utf8               Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">  #11 &#x3D; Utf8               calc</span><br><span class="line">  #12 &#x3D; Utf8               ()I</span><br><span class="line">  #13 &#x3D; Utf8               a</span><br><span class="line">  #14 &#x3D; Utf8               I</span><br><span class="line">  #15 &#x3D; Utf8               b</span><br><span class="line">  #16 &#x3D; Utf8               c</span><br><span class="line">  #17 &#x3D; Utf8               SourceFile</span><br><span class="line">  #18 &#x3D; Utf8               AsmExample.java</span><br><span class="line">  #19 &#x3D; NameAndType        #4:#5          &#x2F;&#x2F; &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #20 &#x3D; Utf8               com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">  #21 &#x3D; Utf8               java&#x2F;lang&#x2F;Object</span><br></pre></td></tr></table></figure>
+
+<p>常量池用来保存常量，在后续的字节码中所需的常量都可以通过常量池序号来引用。可以看到常量池中的常量也有不同的类型。不仅仅是我们在程序中涉及的常量值，还包括类、方法、参数列表等信息也是作为常量保存在常量池中的。</p>
+<h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public com.xiaojukeji.aya.AsmExample();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;1, locals&#x3D;1, args_size&#x3D;1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  &#x2F;&#x2F; Method java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 3: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br></pre></td></tr></table></figure>
+
+<p>构造方法和普通方法的声明并没有什么差别，别看在反编译出来的声明是<br><code>public com.xiaojukeji.aya.AsmExample();</code>，这只是给人看的。</p>
+<p>构造方法的真实声明并不叫<code>public AsmExample()</code>，而是<code>public void &lt;init&gt;()</code></p>
+<p>descriptor这个部分才是方法的入参和返回值的真实声明，可以看到它就是一个返回为void的方法。</p>
+<p>在构造方法中，需要调用父类的构造方法，#1代表常量池中编号为1的常量，向上去翻可以看到#1是<code>java/lang/Object.&quot;&lt;init&gt;&quot;:()V</code>，即为Object类的构造方法。</p>
+<p>当我们自己编写字节码的时候，这种无参构造方法就需要自己来手动编写了，不会有编译器来贴心的帮你生成了。</p>
+<h4 id="成员方法"><a href="#成员方法" class="headerlink" title="成员方法"></a>成员方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public int calc();</span><br><span class="line">    descriptor: ()I</span><br><span class="line">    flags: ACC_PUBLIC</span><br></pre></td></tr></table></figure>
+
+<p>很简单的声明，public方法，输入为空，输出为int。（I代表未装箱的int类型）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Code:</span><br><span class="line">      stack&#x3D;3, locals&#x3D;4, args_size&#x3D;1</span><br><span class="line">         0: iconst_3</span><br><span class="line">         1: istore_1</span><br><span class="line">         2: iconst_4</span><br><span class="line">         3: istore_2</span><br><span class="line">         4: iconst_5</span><br><span class="line">         5: istore_3</span><br><span class="line">         6: iload_1</span><br><span class="line">         7: iload_2</span><br><span class="line">         8: iload_3</span><br><span class="line">         9: imul</span><br><span class="line">        10: iadd</span><br><span class="line">        11: ireturn</span><br></pre></td></tr></table></figure>
+
+<p>这里有三个值：<code>stack=3</code>, <code>locals=4</code>, <code>args_size=1</code></p>
+<p>stack表示在本方法中最大的栈深度。这个3的来源在于第6-8行的三个iload指令，向栈中推入了三个数字。</p>
+<p>locals表示在本方法中的本地变量表最大大小。在本案例中可以在后面的本地变量表中看到这四个变量</p>
+<p>args_size表示输入的参数个数，虽然声明的输入为空，但是还有一个<code>this</code>变量作为默认输入。除了静态方法之外，本地变量表的第一个变量都应当是当前类。</p>
+<p>在本案例中涉及到的指令如下：</p>
+<ul>
+<li>iconst_n： 将值为n的int型常量入栈</li>
+<li>istore_n：将int型数值保存到序号为n的本地变量中，出栈</li>
+<li>iload_n： 将序号为n的int型本地变量入栈</li>
+<li>imul: 将栈顶两个元素相乘，结果入栈</li>
+<li>iadd: 将栈顶两个元素相加，结果入栈</li>
+<li>ireturn: return操作，返回栈顶的int型变量。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LocalVariableTable:</span><br><span class="line">    Start  Length  Slot  Name   Signature</span><br><span class="line">        0      12     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">        2      10     1     a   I</span><br><span class="line">        4       8     2     b   I</span><br><span class="line">        6       6     3     c   I</span><br></pre></td></tr></table></figure>
+
+<p>本地变量表包含5列：</p>
+<ul>
+<li>start ：该变量作用域的起始行数。</li>
+<li>end   ：该变量作用域的终止行数。</li>
+<li>Slot  ：该变量的“槽位”，即序号。注意该序号可以是不连续的。</li>
+<li>Name  ：该变量的名称</li>
+<li>Signature ： 该变量的类型声明</li>
+</ul>
+<p>额外的，如果包含泛型，在变量表中还会以注释的形式显示出泛型信息。注意只是显示，不是以注释方式添加……</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在本节中，简单的了解了字节码文件的结构和Java执行字节码的原理。ASM框架的目的就是通过程序生成一个可执行的字节码。也就是我们要“手写”一段如上的字节码。</p>
+<p>从某种意义上来讲，写字节码和写java文件是基本一致的。就是更换了一种语言而已。只要按照规定的格式写好字节码，JVM就可以读取并执行。我们的目标也就达到了。</p>
+<p>如果有希望更深入理解字节码的同学，可以去学习《深入理解JVM》这本经典名著。其中有更偏重于底层规范的描述。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ASM-Java/" rel="tag"># ASM,Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/13/ASM%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95/" rel="prev" title="ASM笔记目录">
+      <i class="fa fa-chevron-left"></i> ASM笔记目录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/" rel="next" title="(ASM) 二、简单的Hello World实现">
+      (ASM) 二、简单的Hello World实现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81JVM%E7%9A%84%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">一、JVM的执行原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%BB%8E%E9%80%86%E6%B3%A2%E5%85%B0%E5%BC%8F%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.1.</span> <span class="nav-text">1、从逆波兰式说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81JVM%E5%AD%97%E8%8A%82%E7%A0%81%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">2、JVM字节码的执行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">二、字节码文件内容概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%AD%97%E8%8A%82%E7%A0%81%E6%9F%A5%E7%9C%8B"><span class="nav-number">2.1.</span> <span class="nav-text">1、字节码查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6%E5%88%86%E5%9D%97%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">2、字节码文件分块详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E5%A3%B0%E6%98%8E"><span class="nav-number">2.2.1.</span> <span class="nav-text">类声明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.2.</span> <span class="nav-text">常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.3.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E5%91%98%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.4.</span> <span class="nav-text">成员方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ASM 简介ASM，是纯Java实现的Java字节码框架，其特点是尽可能的小而快。根据官网给出的Benchmark，其生成类的性能是其它框架的数倍。 轻量级和高性能是有代价的，相比于Javassist之类的字节码操作库，ASM的visitor模式抽象层级更低，需要用户对底层字节码指令的认识更深入。 也恰恰是这种特点，使得ASM成为了学习字节码增强技术的最佳选择。 ASM框架的引入非常简单，只需要引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ASM) 二、简单的Hello World实现">
+<meta property="og:url" content="http://example.com/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="ASM 简介ASM，是纯Java实现的Java字节码框架，其特点是尽可能的小而快。根据官网给出的Benchmark，其生成类的性能是其它框架的数倍。 轻量级和高性能是有代价的，相比于Javassist之类的字节码操作库，ASM的visitor模式抽象层级更低，需要用户对底层字节码指令的认识更深入。 也恰恰是这种特点，使得ASM成为了学习字节码增强技术的最佳选择。 ASM框架的引入非常简单，只需要引">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-19T04:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-23T09:21:59.008Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ASM,Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>(ASM) 二、简单的Hello World实现 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ASM) 二、简单的Hello World实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-19 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-19T12:00:00+08:00">2020-10-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-23 17:21:59" itemprop="dateModified" datetime="2020-10-23T17:21:59+08:00">2020-10-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="ASM-简介"><a href="#ASM-简介" class="headerlink" title="ASM 简介"></a>ASM 简介</h2><p><a target="_blank" rel="noopener" href="https://asm.ow2.io/">ASM</a>，是纯Java实现的Java字节码框架，其特点是尽可能的小而快。根据官网给出的<a target="_blank" rel="noopener" href="https://asm.ow2.io/performance.html">Benchmark</a>，其生成类的性能是其它框架的数倍。</p>
+<p>轻量级和高性能是有代价的，相比于<a target="_blank" rel="noopener" href="https://github.com/jboss-javassist/javassist">Javassist</a>之类的字节码操作库，ASM的visitor模式抽象层级更低，需要用户对底层字节码指令的认识更深入。</p>
+<p>也恰恰是这种特点，使得ASM成为了学习字节码增强技术的最佳选择。</p>
+<p>ASM框架的引入非常简单，只需要引入一个Maven依赖即可。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.ow2.asm<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>asm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>9.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以可以到 mvnrepository.com 搜索ASM以查看更多的版本。</p>
+<h2 id="流程概述"><a href="#流程概述" class="headerlink" title="流程概述"></a>流程概述</h2><p>要实现一个HelloWorld程序，我们首先要在心里对需要做的工作有一个计划。首先用Java写一个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回想一下我们刚刚做了什么操作：</p>
+<ul>
+<li>新建一个Hello 类</li>
+<li>新建一个show 方法</li>
+<li>调用System.out.println方法</li>
+<li>输入“Hello World”</li>
+</ul>
+<p>接下来寻找用ASM框架实现这些操作的方法。当我们自己编写字节码时，有两点需要注意的。</p>
+<ol>
+<li>需要自己显式的实现构造方法。</li>
+<li>需要先将参数入栈，然后调用方法。</li>
+</ol>
+<p>所以用ASM实现Hello World程序的的操作如下：</p>
+<ul>
+<li>新建一个ClassWriter，实现Hello类</li>
+<li>新建一个MethodVisitor，实现无参构造方法</li>
+<li>新建一个MethodVisitor，实现show方法</li>
+<li>加载System.out静态变量（还记得方法的第一个参数是”this”么）</li>
+<li>加载Hello World常量</li>
+<li>调用println方法</li>
+</ul>
+<p>现在设计清楚了，下一步就是用代码来完成这项工作。</p>
+<h2 id="代码实现："><a href="#代码实现：" class="headerlink" title="代码实现："></a>代码实现：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ClassWriter <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1、新建一个ClassWriter</span></span><br><span class="line">    ClassWriter classWriter = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 声明类 public class Hello</span></span><br><span class="line">    classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, <span class="string">&quot;study/asm/Hello&quot;</span>, <span class="keyword">null</span>, <span class="string">&quot;java/lang/Object&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2、新建一个MethodVisitor，实现无参构造函数</span></span><br><span class="line">    MethodVisitor constructor = classWriter.visitMethod(Opcodes.ACC_PUBLIC, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">// 无参构造方法会调用java.lang.Object(父类)的构造方法</span></span><br><span class="line">    constructor.visitVarInsn(Opcodes.ALOAD, <span class="number">0</span>);</span><br><span class="line">    constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, <span class="string">&quot;java/lang/Object&quot;</span>, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    constructor.visitInsn(Opcodes.RETURN);</span><br><span class="line">    constructor.visitMaxs(<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line">    constructor.visitEnd();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3、构造show方法</span></span><br><span class="line">    MethodVisitor showMethod = classWriter.visitMethod(Opcodes.ACC_PUBLIC, <span class="string">&quot;show&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4、加载System.out静态变量</span></span><br><span class="line">    showMethod.visitFieldInsn(Opcodes.GETSTATIC, <span class="string">&quot;java/lang/System&quot;</span>, <span class="string">&quot;out&quot;</span>, <span class="string">&quot;Ljava/io/PrintStream;&quot;</span>);</span><br><span class="line">    <span class="comment">// 5、加载Hello World常量</span></span><br><span class="line">    showMethod.visitLdcInsn(<span class="string">&quot;Hello world&quot;</span>);</span><br><span class="line">    <span class="comment">// 6、调用System.out.println方法</span></span><br><span class="line">    showMethod.visitMethodInsn(Opcodes.INVOKEVIRTUAL, <span class="string">&quot;java/io/PrintStream&quot;</span>, <span class="string">&quot;println&quot;</span>, <span class="string">&quot;(Ljava/lang/String;)V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    showMethod.visitInsn(Opcodes.RETURN);</span><br><span class="line">    showMethod.visitMaxs(<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">    showMethod.visitEnd();</span><br><span class="line"></span><br><span class="line">    classWriter.visitEnd();</span><br><span class="line">    <span class="keyword">return</span> classWriter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><p>现在生成好了一个Hello类，下一步问题就是如何创建一个实例并调用show方法。</p>
+<p>这里需要用到类加载器相关的知识。Java通过类加载器加载一段byte[]数据来加载一个类。然后就可以通过该类加载器获得该类的实例。</p>
+<p>在目前阶段，可以通过反射的方法最终调用show方法。当然以后也可以通过实现接口的方式来实现直接调用。</p>
+<p>简要代码如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleAsm</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClassWriter <span class="title">hello</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SimpleAsm asm = <span class="keyword">new</span> SimpleAsm();</span><br><span class="line">        ClassWriter classWriter = asm.hello()</span><br><span class="line">        <span class="comment">// 将类写入一段byte[]</span></span><br><span class="line">        <span class="keyword">byte</span>[] code = classWriter.toByteArray();</span><br><span class="line">        <span class="comment">// 通过类加载器加载</span></span><br><span class="line">        Class clazz = asm.defineClass(<span class="string">&quot;study.asm.Hello&quot;</span>, code, <span class="number">0</span>, code.length);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过反射创建实例并调用show方法</span></span><br><span class="line">            Object ins = clazz.newInstance();</span><br><span class="line">            Method show = clazz.getMethod(<span class="string">&quot;show&quot;</span>);</span><br><span class="line">            show.invoke(ins);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本节是通过将一个Hello World的Java程序转换为字节码实现，来直观的体验字节码生成程序的流程。并且初次尝试了ASM框架的应用。在本案例中应用的是ASM的核心接口，采用visitor模式。ASM还支持TreeApi的方式实现同样的功能。本教程主要在于Java字节码的知识，对ASM框架感兴趣的读者可以自行查看ASM官网的用户手册。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ASM-Java/" rel="tag"># ASM,Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/16/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/" rel="prev" title="(ASM) 一、Java字节码简要基础知识">
+      <i class="fa fa-chevron-left"></i> (ASM) 一、Java字节码简要基础知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/20/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" rel="next" title="(ASM) 三、数据类型和操作指令">
+      (ASM) 三、数据类型和操作指令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ASM-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">ASM 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">流程概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">代码实现：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="栈映射帧我们都知道JVM的程序运行是由一个个栈帧组成的。（不知道的去学习《深入理解JVM》，好书不容错过》） 为了提升字节码校验的速度，Java1.6之后新增了一个概念叫做“栈映射帧”(stack map frame)。它不同于一个完整的栈帧但是在逻辑上有一些类似。它保存了在跳转指令执行时的栈中本地变量表和操作数栈。所以在学习分支和循环的实现之前，必须要了解栈映射帧的逻辑。 在实际编写字节码程序之">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ASM) 五、逻辑控制-栈映射帧、分支和循环">
+<meta property="og:url" content="http://example.com/2020/10/22/ASM-%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6-%E5%88%86%E6%94%AF%E5%92%8C%E5%BE%AA%E7%8E%AF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="栈映射帧我们都知道JVM的程序运行是由一个个栈帧组成的。（不知道的去学习《深入理解JVM》，好书不容错过》） 为了提升字节码校验的速度，Java1.6之后新增了一个概念叫做“栈映射帧”(stack map frame)。它不同于一个完整的栈帧但是在逻辑上有一些类似。它保存了在跳转指令执行时的栈中本地变量表和操作数栈。所以在学习分支和循环的实现之前，必须要了解栈映射帧的逻辑。 在实际编写字节码程序之">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-23T09:22:47.947Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ASM,Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/22/ASM-%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6-%E5%88%86%E6%94%AF%E5%92%8C%E5%BE%AA%E7%8E%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>(ASM) 五、逻辑控制-栈映射帧、分支和循环 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/22/ASM-%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6-%E5%88%86%E6%94%AF%E5%92%8C%E5%BE%AA%E7%8E%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ASM) 五、逻辑控制-栈映射帧、分支和循环
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-22 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-22T12:00:00+08:00">2020-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-23 17:22:47" itemprop="dateModified" datetime="2020-10-23T17:22:47+08:00">2020-10-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="栈映射帧"><a href="#栈映射帧" class="headerlink" title="栈映射帧"></a>栈映射帧</h2><p>我们都知道JVM的程序运行是由一个个栈帧组成的。（不知道的去学习《深入理解JVM》，好书不容错过》）</p>
+<p>为了提升字节码校验的速度，Java1.6之后新增了一个概念叫做“栈映射帧”(stack map frame)。它不同于一个完整的栈帧但是在逻辑上有一些类似。它保存了在跳转指令执行时的栈中本地变量表和操作数栈。所以在学习分支和循环的实现之前，必须要了解栈映射帧的逻辑。</p>
+<p>在实际编写字节码程序之前，很可能对于栈映射帧并没有很深刻的体会。类加载器的校验过程中，当我们使用逻辑控制指令跳转到一个位置之后，会检验我们是否构建了一个新的栈映射帧。如果没有的话会报错。</p>
+<p>之前的程序中，我们都是一个顺序执行的程序。但是显然实际的程序中包含了大量的分支和循环操作。下面用一个例子来说明栈映射帧的作用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void fp(int a) &#123;</span><br><span class="line">    if(a &#x3D;&#x3D; 1) &#123;</span><br><span class="line">        String str &#x3D; &quot;append&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    String str &#x3D; &quot;out&quot;;</span><br><span class="line">    System.out.println(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个程序中，if中的str和外面的str虽然名字相同，却是两个不同的变量。此时我们分析程序的本地变量表，会发现本地变量表也出现了两种情况。当传入a!=1是，正常执行后面的指令，但是当传入a==1时，会出现同一个本地变量槽位有两个值的冲突。但是显然我们平时编码并没有遇到这个问题。这就是栈映射帧的功劳之一。</p>
+<p>根据刚刚描述的逻辑，我们可能直觉的认为会将if中的语句作为一个栈映射帧，但是实际的实现其实和我们刚刚描述的直觉并不完全相同。</p>
+<p>在字节码的实现中，在if结束后，<code>String str = &quot;out&quot;;</code>语句之前，会创建一个新的栈映射帧。新栈映射帧继承了栈帧中的本地变量表，并删除了最新的一个本地变量（即<code>String str = &quot;append&quot;;</code>)。同时构建了一个空的操作数栈。</p>
+<p>这样，在if代码段中的<code>str</code>的作用域就被打断。这也是我们内外的两个<code>str</code>变量不会冲突的原因。</p>
+<p>如果用我们更容易理解的Java来实现，其实它的代码更接近于下面的样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (a !&#x3D; 1) &#123;</span><br><span class="line">    String str &#x3D; &quot;out&quot;;</span><br><span class="line">    System.out.println(str);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    String str &#x3D; &quot;append&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段程序的ASM实现代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">mv = cw.visitMethod(ACC_PUBLIC, <span class="string">&quot;fp&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">mv.visitCode();</span><br><span class="line">mv.visitInsn(ICONST_1);</span><br><span class="line">mv.visitVarInsn(ISTORE, <span class="number">1</span>);</span><br><span class="line">mv.visitVarInsn(ILOAD, <span class="number">1</span>);</span><br><span class="line">mv.visitInsn(ICONST_1);</span><br><span class="line">Label l2 = <span class="keyword">new</span> Label();</span><br><span class="line"><span class="comment">// 此处通过IF_ICMPNE来执行跳转到visitLabel(l2)的位置。</span></span><br><span class="line"><span class="comment">// 实际上是判断 a != 1</span></span><br><span class="line">mv.visitJumpInsn(IF_ICMPNE, l2);</span><br><span class="line">mv.visitLdcInsn(<span class="string">&quot;append&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ASTORE, <span class="number">2</span>);</span><br><span class="line">mv.visitLabel(l2);</span><br><span class="line"><span class="comment">// visitFrame方法即为构造一个新的栈帧</span></span><br><span class="line">mv.visitFrame(Opcodes.F_APPEND, <span class="number">1</span>, <span class="keyword">new</span> Object[]&#123;Opcodes.INTEGER&#125;, <span class="number">0</span>, <span class="keyword">null</span>);</span><br><span class="line">mv.visitLdcInsn(<span class="string">&quot;out&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ASTORE, <span class="number">2</span>);</span><br><span class="line">mv.visitFieldInsn(GETSTATIC, <span class="string">&quot;java/lang/System&quot;</span>, <span class="string">&quot;out&quot;</span>, <span class="string">&quot;Ljava/io/PrintStream;&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ALOAD, <span class="number">2</span>);</span><br><span class="line">mv.visitMethodInsn(INVOKEVIRTUAL, <span class="string">&quot;java/io/PrintStream&quot;</span>, <span class="string">&quot;println&quot;</span>, <span class="string">&quot;(Ljava/lang/String;)V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">mv.visitInsn(RETURN);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;this&quot;</span>, <span class="string">&quot;Lcom/nature/dql/SuperMaper;&quot;</span>, <span class="keyword">null</span>, l0, l6, <span class="number">0</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;I&quot;</span>, <span class="keyword">null</span>, l1, l6, <span class="number">1</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;str&quot;</span>, <span class="string">&quot;Ljava/lang/String;&quot;</span>, <span class="keyword">null</span>, l4, l6, <span class="number">2</span>);</span><br><span class="line">mv.visitMaxs(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">mv.visitEnd();</span><br></pre></td></tr></table></figure>
+
+<p>老规矩，我们来看<code>visitFrame</code>方法的声明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void visitFrame(</span><br><span class="line">    final int type, &#x2F;&#x2F; 类型</span><br><span class="line">    final int numLocal, &#x2F;&#x2F; 变更本地变量表长度</span><br><span class="line">    final Object[] local, &#x2F;&#x2F; 变更本地变量表对应类型</span><br><span class="line">    final int numStack, &#x2F;&#x2F; 变更操作数栈深度</span><br><span class="line">    final Object[] stack) &#x2F;&#x2F; 变更操作数栈数据类型</span><br></pre></td></tr></table></figure>
+
+<p>ASM为我们提供了五种创建栈帧的类型，分别如下：</p>
+<p>1、 F_FULL:</p>
+<p>创建包含有完整的本地变量表和操作数栈内容的栈映射帧。即需要输入完整的本地变量表和操作数栈。</p>
+<p>2、 F_APPEND:</p>
+<p>继承栈帧的本地变量表，并且可以附加1-3个本地变量。并且拥有一个空的操作数栈</p>
+<p>3、 F_CHOP:</p>
+<p>继承栈帧的本地变量表，并且可以移除最后的1-3个本地变量。并且拥有一个空的操作数栈，使用时只需要传入numLocal参数即可，其它均为空（0）即可。</p>
+<p>4、 F_SAME:</p>
+<p>与当前栈帧的本地变量表完全一样，并且拥有一个空的操作数栈，除type外的其它参数均为空（0）即可。</p>
+<p>5、 F_SAME1:</p>
+<p>与当前栈帧的本地变量表完全一样，并且操作数栈有一个值</p>
+<p>各自的具体应用就看具体情况而定了。</p>
+<h2 id="If分支逻辑"><a href="#If分支逻辑" class="headerlink" title="If分支逻辑"></a>If分支逻辑</h2><p><code>if</code>判断是程序中最常见的逻辑之一了。其实在我们上一节的内容中已经举例了一个最简单的if判断。</p>
+<p>在了解具体实现之前，我们需要在脑海中确立一个总的观念：字节码的逻辑控制其实只有一个语句：goto。</p>
+<p>在我们初学编程的时候，大多听说过臭名昭著的<code>goto</code>语句。这个能够打破顺序、分支、循环三大逻辑的神奇咒语仿佛会带来整个程序的崩溃。在Java中，也可以通过break语句来实现goto的效果，还保留了标签的语法。可是大多数人并没有用过，也没有想过要用这种方式来编写代码。</p>
+<p>但是在jvm的实现中，goto才是一切逻辑的基础。</p>
+<p>一个If分支逻辑的基本形式如：<code>a&gt;b?doA():doB()</code>。用字节码来实现的概要如下。</p>
+<p>为了省略，在本文后续内容均用<code>label(tag)</code>来代替具体的行号。代表跳转到<code>label(tag):</code>标记的位置。且均使用字节码代替具体的ASM语句。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">iload b</span><br><span class="line">if_icmple label(else) &#x2F;&#x2F; if(a &lt;&#x3D; b) goto label(else)</span><br><span class="line">invokevirtual doA &#x2F;&#x2F; 代表具体业务逻辑</span><br><span class="line">label(else): &#x2F;&#x2F; 在此处需要创建栈映射帧</span><br><span class="line">invokevirtual doB</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p>需要创建的栈映射帧因为结构和内部逻辑的不同会有不同的具体情况，需要根据场景和自己的封装形式进行分析。所以在后续中只会注明需要创建栈映射帧的位置，而不会具体说明如何创建。创建栈映射帧的操作位于label标记之后。</p>
+<p>很多时候，我们的if并不是简单地一个条件，当遇到形如<code>if(a &amp;&amp; b)</code>的情形，我们需要将它拆分成简单逻辑的组合形式。</p>
+<p>例如：<code>if(a &amp;&amp; b)</code> 可以等价于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if(a) &#123;</span><br><span class="line">    if(b) &#123;</span><br><span class="line">        doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用字节码来实现也比较简单，就是连续进行多个判断，如果判断为false则跳转到if代码块的结尾。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">ifne label(end)</span><br><span class="line">iload b</span><br><span class="line">ifne label(end)</span><br><span class="line">invokevirtial doSomething</span><br><span class="line">label(end): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtual doElse</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p>对于形如<code>if(a || b)</code>的代码则比较绕弯弯，简单的实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">ifne label(in)</span><br><span class="line">iload b</span><br><span class="line">ifeq label(out)</span><br><span class="line">label(in): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtial doSomething</span><br><span class="line">label(out): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtual doElse</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p>这其中涉及到关于短路逻辑的实现，即当<code>a</code>为真的时候，会直接跳转到<code>label(in)</code>的位置执行逻辑。<code>b</code>的部分则与普通的if判断相同。</p>
+<p>因为短路逻辑跳转的存在，<code>a||b</code>的判断需要比<code>a&amp;&amp;b</code>的判断多创建一个栈映射帧</p>
+<h2 id="循环逻辑"><a href="#循环逻辑" class="headerlink" title="循环逻辑"></a>循环逻辑</h2><p>循环逻辑是在实际代码中另一种常见的逻辑。在字节码的实现中，可以将一个循环分为三个部分：</p>
+<ul>
+<li>循环体，包含循环内需要的业务逻辑</li>
+<li>循环判断</li>
+<li>循环点</li>
+</ul>
+<p>在代码中实现循环有for/while/do-while三种形式。其实就是这三个部分的排列不同形成的不同效果。</p>
+<p>一个经典的for循环代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">    cnt ++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以用goto的伪代码来拆解一下这个循环，对应上面说的几个要素：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">label(start):<span class="comment">// 循环点</span></span><br><span class="line"><span class="keyword">if</span>(i &gt; <span class="number">10</span>) <span class="function">goto <span class="title">label</span><span class="params">(end)</span> <span class="comment">// 循环判断</span></span></span><br><span class="line"><span class="function">cnt++</span>; <span class="comment">// 循环体</span></span><br><span class="line">i++;</span><br><span class="line"><span class="function">goto <span class="title">label</span><span class="params">(start)</span></span></span><br><span class="line"><span class="function"><span class="title">label</span><span class="params">(end)</span>:<span class="comment">// 循环点</span></span></span><br></pre></td></tr></table></figure>
+
+<p>用字节码来实现上面的这一段逻辑就非常清晰了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">bipush 0</span><br><span class="line">istore 1</span><br><span class="line">bipush 0</span><br><span class="line">istore 2</span><br><span class="line">label(start): &#x2F;&#x2F; 此处需要创建栈映射帧，循环点</span><br><span class="line">iload 2</span><br><span class="line">bipush 10</span><br><span class="line">if_icmpge label(end)  &#x2F;&#x2F; 循环判断</span><br><span class="line">iinc 1 1   &#x2F;&#x2F; 循环体</span><br><span class="line">iinc 2 1</span><br><span class="line">goto label(start)</span><br><span class="line">label(end): &#x2F;&#x2F; 此处需要创建栈映射帧，循环点</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p>如果我们将循环体和循环判断的位置进行一下调换，在判断后跳转到label(start)的位置，就实现了do-while的循环。这种循环在字节码的实现中反倒显得更为顺畅一些，因为只需要一个循环点，创建一个栈映射帧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">bipush 0</span><br><span class="line">istore 1</span><br><span class="line">bipush 0</span><br><span class="line">isotre 2</span><br><span class="line">label(start): &#x2F;&#x2F; 需要创建栈映射帧，循环点</span><br><span class="line">iinc 1 1  &#x2F;&#x2F; 循环体</span><br><span class="line">iinc 2 1</span><br><span class="line">iload 2</span><br><span class="line">bipush 10</span><br><span class="line">if_icmplt label(start) &#x2F;&#x2F; 循环判断</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>总而言之，相比于在代码中实现逻辑控制的多种方式，在字节码中只有跳转指令这一种方式。如果不怕逻辑混乱，开动脑筋，我们甚至可以做出很多超出代码限制的跳转方式，实现更为灵活的逻辑控制。</p>
+<p>本教程至今，已经完整描述类类、方法、变量、逻辑控制的相关技能。这些东西已经足够组成一个完整的程序，去实现我们所期待的任何功能。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ASM-Java/" rel="tag"># ASM,Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/21/ASM-%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95/" rel="prev" title="(ASM) 四、类和方法">
+      <i class="fa fa-chevron-left"></i> (ASM) 四、类和方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/23/ASM-%E7%BB%93%E8%AF%AD/" rel="next" title="(ASM) 结语">
+      (ASM) 结语 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E6%98%A0%E5%B0%84%E5%B8%A7"><span class="nav-number">1.</span> <span class="nav-text">栈映射帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#If%E5%88%86%E6%94%AF%E9%80%BB%E8%BE%91"><span class="nav-number">2.</span> <span class="nav-text">If分支逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E9%80%BB%E8%BE%91"><span class="nav-number">3.</span> <span class="nav-text">循环逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

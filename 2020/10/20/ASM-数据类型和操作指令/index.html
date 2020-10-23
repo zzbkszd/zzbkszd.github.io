@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据类型在JVM中，数据类型与我们的Java代码有所不同。可以分为两个大类：基本类型和引用类型。 再次回想Java的装箱机制，比如int与Integer, float与Float，前者就是基本类型，后者则是一个引用类型。 在java中，基本类型包含int,float,double,boolean,byte,char,short等。但是在JVM中，基本类型只有以下四种：  int 用I表示 floa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ASM) 三、数据类型和操作指令">
+<meta property="og:url" content="http://example.com/2020/10/20/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数据类型在JVM中，数据类型与我们的Java代码有所不同。可以分为两个大类：基本类型和引用类型。 再次回想Java的装箱机制，比如int与Integer, float与Float，前者就是基本类型，后者则是一个引用类型。 在java中，基本类型包含int,float,double,boolean,byte,char,short等。但是在JVM中，基本类型只有以下四种：  int 用I表示 floa">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-20T03:53:09.000Z">
+<meta property="article:modified_time" content="2020-10-23T09:22:47.102Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ASM,Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/20/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>(ASM) 三、数据类型和操作指令 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/20/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ASM) 三、数据类型和操作指令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-20 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-20T11:53:09+08:00">2020-10-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-23 17:22:47" itemprop="dateModified" datetime="2020-10-23T17:22:47+08:00">2020-10-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>在JVM中，数据类型与我们的Java代码有所不同。可以分为两个大类：<code>基本类型</code>和<code>引用类型</code>。</p>
+<p>再次回想Java的装箱机制，比如int与Integer, float与Float，前者就是基本类型，后者则是一个引用类型。</p>
+<p>在java中，基本类型包含int,float,double,boolean,byte,char,short等。但是在JVM中，基本类型只有以下四种：</p>
+<ul>
+<li>int 用I表示</li>
+<li>float 用F表示</li>
+<li>long 用L表示</li>
+<li>double 用D表示</li>
+</ul>
+<p>其它的数据类型都会被转变为基本类型进行操作，比如boolean，虽然在声明中用Z表示，但是操作时都是按照int类型进行操作。</p>
+<p>需要注意的是，在对基本类型进行字节码操作时，如果需要装箱、拆箱操作，需要手动编写字节码调用对应的方法。否则会出现数据类型错误。</p>
+<p>引用类型是一个统称，除了以上四种基本类型之外的变量都是引用类型，包括字符串、对象实例等变量。</p>
+<h2 id="数据类型的表示"><a href="#数据类型的表示" class="headerlink" title="数据类型的表示"></a>数据类型的表示</h2><p>在声明一个类、方法的时候需要用到数据类型的描述信息。与操作符用小写字母不同，基本数据类型的描述信息是大写字母，并且还有一些事基本类型的扩展，常用的包括以下几种：</p>
+<p>I(int), L(long), F(float), D(double), V(void), Z(boolean)</p>
+<p>在声明中，引用类型会直接描述具体的类型，比如<code>java.lang.Object</code>，会描述为<code>Ljava/lang/Object;</code></p>
+<p>在数组的声明中，用<code>[</code>来表示数组，比如<code>[I;</code>表示一个int[]</p>
+<p>引用类型的数组描述在类型描述之前增加一个<code>[</code>，比如<code>Object[]</code>类型会被描述为：<code>[Ljava/lang/Object;</code>，注意后面的分号只有一个。</p>
+<h2 id="操作指令"><a href="#操作指令" class="headerlink" title="操作指令"></a>操作指令</h2><p>Java的字节码操作指令分为以下几个大类：</p>
+<ul>
+<li>栈操作</li>
+<li>运算指令</li>
+<li>类型转换</li>
+<li>流程控制</li>
+<li>对象操作</li>
+<li>锁和同步</li>
+</ul>
+<p>如果从广义上来讲，前面四个类型的操作都是栈操作指令。</p>
+<p>字节码指令通常由几个部分组成：数据类型，操作指令，地址。</p>
+<p>例如：iload_3，其中i代表int类型，load代表将数据推入栈顶，3代表数据在本地变量表slot=3的位置。</p>
+<p>另一种情况则是对于数组的操作，数组（array)，所以数组操作基本就是在操作指令的前面加一个a。</p>
+<p>例如：faload， 消耗栈顶两个元素：<code>array, idx</code>， 将<code>array[idx]</code>推入栈顶。</p>
+<p>在操作指令中有一些自带常量的操作符，例如<code>iload_0</code>，其等价于<code>iload 0</code>，出于统一便捷记忆，除了const常量操作之外，其它的操作符均不赘述包含下划线的常量操作符。</p>
+<p>在操作符中，涉及到long和double类型的操作，会有一些特定的操作诸如<code>pop2</code>操作符。基本原则是long和double相当于两个int/float，所以操作int的指令不能操作long，操作long的指令相当于操作两个int。</p>
+<h3 id="栈操作"><a href="#栈操作" class="headerlink" title="栈操作"></a>栈操作</h3><p>栈操作包含：</p>
+<p><em>const</em>： 推送一个常量值到栈顶，int型支持0-5， float支持0-2，long和double仅支持0和1。</p>
+<p>案例：<code>iconst_1</code></p>
+<p><em>load/aload</em>： 将本地变量推送至栈顶，支持i/l/f/d/a类型。支持一个参数代表本地变量slot。支持数组操作。</p>
+<p>案例：<code>fload 1</code></p>
+<p><em>store/astore</em>：将栈顶元素保存到指定slot的本地变量，支持i/l/f/d/a类型，需要一个参数代表本地变量slot，支持数组操作。</p>
+<p>案例：<code>istore 1</code></p>
+<p><em>pop/pop2</em>：将栈顶元素推出，pop不支持long/double类型，pop2支持long/double类型，对于其它类型则相当于两次pop操作。</p>
+<p>案例：<code>pop</code></p>
+<p><em>dup/dup_x1/dup_x2/dup2/dup2_x1/dup2_x2</em>：复制栈顶元素，x1代表复制两次，x2代表复制三次，dup2对应long/double类型。</p>
+<p>案例：<code>dup</code></p>
+<p><em>bipush/sipush</em> 将一个常量推送至栈顶，bipush仅支持8位，即<code>-128~127</code>，sipush支持16位，即<code>-32768~32767</code></p>
+<p>案例：<code>bipush 10</code></p>
+<p><em>ldc</em> 将一个int/float/string型常量从常量池推送至栈顶</p>
+<p>案例：<code>ldc &quot;Hello&quot;</code></p>
+<h3 id="运算操作："><a href="#运算操作：" class="headerlink" title="运算操作："></a>运算操作：</h3><p>运算操作包括：</p>
+<ul>
+<li>add;sub;mul;div： 加减乘除，支持i/l/f/d</li>
+<li>rem：求余，支持i/l/f/d</li>
+<li>neg：求负，支持i/l/f/d</li>
+<li>shl; shr : 位运算，左移，右移支持i/iu(无符号)/l，</li>
+<li>and; or; xor：与，或，异或支持i/l</li>
+<li>iinc：自增，约等于 i++， 仅限整数</li>
+</ul>
+<h3 id="类型转换："><a href="#类型转换：" class="headerlink" title="类型转换："></a>类型转换：</h3><p>类型转换支持在基本类型之间进行转换，同样需要注意可能存在的精度丢失问题。</p>
+<p>支持i(int), l(long), f(float), d(double)四种基本类型之间的任意转换，指令类似：<code>i2l</code>,即为int转换成long。</p>
+<p>还支持：<code>i2b;i2c;i2s</code>三种，分别转换至b(byte), c(char)和s(short)。</p>
+<h3 id="流程控制："><a href="#流程控制：" class="headerlink" title="流程控制："></a>流程控制：</h3><p>常见的if语句中的条件判断基本都是用对比操作实现的。</p>
+<p><em>cmp</em>: 对比操作，支持l/f/d，返回1/0/-1作为结果。有<code>cmpl; cmpg</code>两种，分别对比小于和大于。</p>
+<p>案例：<code>lcmpl</code></p>
+<p><em>if</em>： 当栈顶为int（boolean）时，和0进行对比：<code>eq/ne/lt/ge/gt/le</code>六种操作。分别表示<code>== != &lt; &gt;= &gt; &lt;=</code></p>
+<p>案例：<code>ifge</code></p>
+<p><em>if_icmp</em>： 对比并跳转操作，对比栈顶两个元素，对比部分支持情况和if一致，当对比结果为真时，跳转到指定代码行，通常用Label指定。</p>
+<p>案例：<code>if_icmpge 23</code></p>
+<p><em>goto</em>： 无条件跳转，和java中隐含的goto语句是同一个意思。</p>
+<p><em>return</em>： 返回值，将栈顶元素作为返回值返回。支持：i/l/f/d/a以及void类型。直接用<code>return</code>指令就是返回void。</p>
+<p>案例：<code>areturn</code></p>
+<h3 id="对象操作："><a href="#对象操作：" class="headerlink" title="对象操作："></a>对象操作：</h3><p><em>getstatic/putstatic</em> 获取、设置类的静态变量</p>
+<p><em>getfield/putfield</em> 获取、设置类的成员变量</p>
+<p><em>invokevirtual</em> 调用实例方法</p>
+<p><em>invokespecial</em> 调用超类构建方法、实例初始化方法、私有方法</p>
+<p><em>invokestatic</em> 调用静态方法</p>
+<p><em>invokeinterface</em> 调用接口方法</p>
+<p><em>invokedynamic</em> 动态判断调用方法</p>
+<p><em>new</em> 构建一个新对象并放入栈顶</p>
+<p><em>newarray</em> 构建一个基础类型数组</p>
+<p><em>anewarray</em> 构建一个引用类型数组</p>
+<p><em>arraylength</em> 获得数组长度</p>
+<p><em>checkcast</em> 类型转换校验</p>
+<p><em>instanceof</em> 就是instanceof</p>
+<h3 id="锁和同步："><a href="#锁和同步：" class="headerlink" title="锁和同步："></a>锁和同步：</h3><p><em>monitorenter</em> 获得对象的锁</p>
+<p><em>monitorexit</em> 释放对象的锁</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本节详细描述了在Java字节码中常用的部分指令，但是本文仅仅是一个概述和助记，不完整包含全部操作符。具体的全部操作符可以见表<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008722128">JVM虚拟机字节码指令表</a></p>
+<p>了解了操作符之后，就已经掌握了编写字节码程序的基本知识。建议读者将本篇和上一篇的Hello World程序相印证以加深印象。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ASM-Java/" rel="tag"># ASM,Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/" rel="prev" title="(ASM) 二、简单的Hello World实现">
+      <i class="fa fa-chevron-left"></i> (ASM) 二、简单的Hello World实现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/21/ASM-%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95/" rel="next" title="(ASM) 四、类和方法">
+      (ASM) 四、类和方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">数据类型的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">操作指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E6%93%8D%E4%BD%9C"><span class="nav-number">3.1.</span> <span class="nav-text">栈操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">运算操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">类型转换：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">流程控制：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">3.5.</span> <span class="nav-text">对象操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E5%92%8C%E5%90%8C%E6%AD%A5%EF%BC%9A"><span class="nav-number">3.6.</span> <span class="nav-text">锁和同步：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
