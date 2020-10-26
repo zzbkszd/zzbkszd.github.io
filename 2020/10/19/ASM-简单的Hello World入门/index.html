@@ -28,9 +28,10 @@
 <meta property="og:description" content="ASM 简介ASM，是纯Java实现的Java字节码框架，其特点是尽可能的小而快。根据官网给出的Benchmark，其生成类的性能是其它框架的数倍。 轻量级和高性能是有代价的，相比于Javassist之类的字节码操作库，ASM的visitor模式抽象层级更低，需要用户对底层字节码指令的认识更深入。 也恰恰是这种特点，使得ASM成为了学习字节码增强技术的最佳选择。 ASM框架的引入非常简单，只需要引">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-19T04:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-23T09:21:59.008Z">
+<meta property="article:modified_time" content="2020-10-26T01:57:57.785Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="ASM,Java">
+<meta property="article:tag" content="ASM">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://example.com/2020/10/19/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/">
@@ -50,6 +51,15 @@
   
 
 
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?29b79bcfc487303136c79e51d766681d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -118,6 +128,11 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
@@ -181,8 +196,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-23 17:21:59" itemprop="dateModified" datetime="2020-10-23T17:21:59+08:00">2020-10-23</time>
+                <time title="Modified: 2020-10-26 09:57:57" itemprop="dateModified" datetime="2020-10-26T09:57:57+08:00">2020-10-26</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
+                </span>
+            </span>
 
           
 
@@ -245,7 +269,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/ASM-Java/" rel="tag"># ASM,Java</a>
+              <a href="/tags/ASM/" rel="tag"># ASM</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
           </div>
 
         
@@ -337,12 +362,21 @@
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
-      <div class="site-state-item site-state-tags">
+      <div class="site-state-item site-state-categories">
         <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zzbkszd" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzbkszd" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
