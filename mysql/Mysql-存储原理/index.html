@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据存储Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。 MyISAMMyISAM引擎的存储特性为，每个表保存为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Mysql) 三、存储方式和索引原理">
+<meta property="og:url" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Aya的Blog">
+<meta property="og:description" content="数据存储Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。 MyISAMMyISAM引擎的存储特性为，每个表保存为">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
+<meta property="article:published_time" content="2020-11-01T03:53:09.000Z">
+<meta property="article:modified_time" content="2020-11-05T02:08:28.773Z">
+<meta property="article:author" content="Aya Shi">
+<meta property="article:tag" content="MYSQL">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
+
+<link rel="canonical" href="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(Mysql) 三、存储方式和索引原理 | Aya的Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?29b79bcfc487303136c79e51d766681d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Aya的Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Mysql) 三、存储方式和索引原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-01 11:53:09" itemprop="dateCreated datePublished" datetime="2020-11-01T11:53:09+08:00">2020-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-05 10:08:28" itemprop="dateModified" datetime="2020-11-05T10:08:28+08:00">2020-11-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p>Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。</p>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>MyISAM引擎的存储特性为，每个表保存为一个文件，而且数据和索引是分开存储的。在磁盘上分为三类文件存储：</p>
+<a id="more"></a>
+<ul>
+<li><code>.frm</code>文件： 保存表的元数据，如表结构等信息。</li>
+<li><code>.myd</code>文件： 保存表的数据。</li>
+<li><code>.myi</code>文件： 保存表的索引信息。</li>
+</ul>
+<p>MyISAM有三种数据存储方式：</p>
+<ul>
+<li>静态表：默认的存储方式，在表中不存在变长字段如<code>varchar\varbinary\blob\text</code>的时候使用。每一列的长度都是填充为固定长度。这种存储方式有很高的效率。</li>
+<li>动态表：与静态表相对，当存在变长字段的时候使用动态表存储。相比静态表稍微复杂一点。效率也相对低一些。但是可以节约很多磁盘空间。</li>
+<li>压缩表：压缩表是一种只读格式的表，由MyISAMpack工具生成，可以用MyISAMchk工具解压缩。非常节约空间，前两种表均可以生成压缩表。</li>
+</ul>
+<p>在MyISAM中，每个表的最大存储空间为<code>2^63bit</code>，每个表最多有<code>(2^32)^2</code>行数据。</p>
+<p>每个表最多可以创建64个索引，每个索引最多拥有16列。</p>
+<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB引擎最主要的存储特性就是将数据和索引存放在同一个文件中，数据即为索引。在磁盘上同样分为三类文件存储：</p>
+<ul>
+<li><code>.frm</code>文件： 保存表的元数据，如表结构等信息。</li>
+<li><code>.ibd</code>文件： 如果使用独立表存储，会使用这种文件存储每一个表的数据。</li>
+<li><code>.ibdata</code>文件： 如果使用共享表存储，会使用这种文件存储多个表的数据。</li>
+</ul>
+<p>InnoDB的逻辑存储结构是从大到小的套娃式存储，存储单位从大到小依次如下：</p>
+<ul>
+<li>表空间： 分为独立表空间和共享表空间，对应独立表存储和共享表存储。每个表空间的最大存储容量就是64TB。</li>
+<li>段： 有数据段，索引段，回滚段三个种类。对应在索引的B+树上，数据段就是叶子节点，索引段就是非叶子节点。</li>
+<li>区： 每个区包含64个连续的页，所以一个区的大小为1MB。</li>
+<li>页： 每个页的大小限制为16kb，按类别有数据页、Undo页、系统页、事务数据页、插入缓冲位图页、以及插入缓冲空闲列表页。</li>
+<li>行： 每个页中最多包含16kb/2-200=7992行数据。</li>
+</ul>
+<h2 id="索引的实现"><a href="#索引的实现" class="headerlink" title="索引的实现"></a>索引的实现</h2><p>Mysql中的索引组织形式有两种：BTREE索引和Hash索引。两种索引适用于不同的情况。忽略不同存储引擎的存储方式，本节讨论索引存储的逻辑结构。</p>
+<h3 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h3><p>BTREE索引是最常用的索引形式，其底层实现是基于B+树的。关于B+树的详细信息可以参见算法部分<a href="/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91">查找树</a>的内容。</p>
+<p>B+树是一种多路平衡查找树，其优点在于树的层级较少，整颗树比较“矮”，可以减少查找的路程，减少磁盘的读写次数。更适合用于组织数据库的数据存储。</p>
+<p>而在数据库的索引中，对于B+树还进行了改进，使用链表的形式将所有的叶子节点连城一个整体，可以大幅度提高遍历的效率。</p>
+<p>在这颗B+树种，只有叶子节点保存数据，非叶子节点则保存索引。这样也使得查询任意位置的数据所经过的路径长度都基本一致。</p>
+<p>一颗数据库中索引的B+树如图所示：</p>
+<p><img src="b+tree.png"></p>
+<p>B+树的另一个优点是可以充分利用磁盘的预读取机制。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">预读取机制：</span><br><span class="line">根据计算机科学中著名的“局部性原理”：当一个数据被用到时，其附近的数据也通常会马上被使用。所以磁盘每次读取一个位置的数据时，会顺序读取其后一定长度的字节数，一般为一个页（4K)的整数倍。</span><br><span class="line"></span><br><span class="line">（插入一个小tip: 在机械磁盘中，一个任意小的文件占据磁盘空间都是4Kb，所以256个1kb大小的文件，占据的磁盘空间不是256kb，而是1mb）</span><br><span class="line"></span><br><span class="line">而相对于随机读写，磁盘的顺序读取效率是很高的。所以将数据存储为符合局部性原理的结构（比如B+树的叶子节点），可以充分利用预读取机制，大幅度提升IO效率。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在数据库存储数据的时候，每一个节点的大小都与磁盘每一页的大小相同，这样只要一次IO就可以读取出尽量多有效的数据（见上面tip），然后在内存中对数据进行进一步的查找处理，这样可以大幅度降低IO操作的次数。</p>
+<h3 id="主键索引和辅助索引"><a href="#主键索引和辅助索引" class="headerlink" title="主键索引和辅助索引"></a>主键索引和辅助索引</h3><p>在MyISAM引擎中，索引文件和数据文件是独立开的。索引的叶子节点保存的是对应数据的地址，先在索引中查找到地址，然后再从数据文件中读取数据。</p>
+<p>MyISAM中，主键索引的key必须是唯一的，而辅助索引的key可以是重复的。也因此MyISAM引擎可以允许表不存在主键。</p>
+<p>这种索引也称为“非聚集”索引。</p>
+<p>在InnoDB中的情况则复杂一点。</p>
+<p>因InnoDB中的数据是以索引的结构存储的，所以InnoDB的表中必须存在主键，若没有指定主键，也没有位置标志的字段，则会自动生成隐式的唯一主键，长整形6个字节。这就是“聚集”索引，数据按照主键聚集在一起。</p>
+<p>所以，如果建立了另一个不包含主键的索引，即辅助索引，InnoDB会在辅助索引上查找到主键的值，再回到主键索引上根据主键查找到对应的数据。这一过程称为“回表”，会降低查询的效率。</p>
+<h3 id="Hash索引"><a href="#Hash索引" class="headerlink" title="Hash索引"></a>Hash索引</h3><p>Hash索引的实现和普通的Hash表是一致的。通常只有Mysql中的Memary引擎，即内存引擎才支持Hash索引。</p>
+<p>顾名思义，Hash索引在根据索引列查询数据时的效率是极高的，但是仅支持少数随机查找操作，不能进行<code>&gt;、&lt;</code>等区间范围的操作。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MYSQL/" rel="tag"># MYSQL</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/mysql/Mysql-%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81/" rel="prev" title="(Mysql) 四、事务和锁">
+      <i class="fa fa-chevron-left"></i> (Mysql) 四、事务和锁
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/" rel="next" title="(算法) 查找树详解">
+      (算法) 查找树详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MyISAM"><span class="nav-number">1.1.</span> <span class="nav-text">MyISAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB"><span class="nav-number">1.2.</span> <span class="nav-text">InnoDB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">索引的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-%E6%A0%91%E7%B4%A2%E5%BC%95"><span class="nav-number">2.1.</span> <span class="nav-text">B+树索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%92%8C%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95"><span class="nav-number">2.2.</span> <span class="nav-text">主键索引和辅助索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash%E7%B4%A2%E5%BC%95"><span class="nav-number">2.3.</span> <span class="nav-text">Hash索引</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Aya Shi"
+      src="/image/icon.png">
+  <p class="site-author-name" itemprop="name">Aya Shi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zzbkszd" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzbkszd" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zzbkszd@163.com" title="E-Mail → mailto:zzbkszd@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Aya Shi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

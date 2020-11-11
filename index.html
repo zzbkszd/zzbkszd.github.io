@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -17,15 +17,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="Aya的Blog">
 <meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="Aya的Blog">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Aya Shi">
 <meta property="article:tag" content="Java 后端 技术 开发">
 <meta name="twitter:card" content="summary">
 
@@ -38,7 +38,7 @@
     sidebar: "",
     isHome : true,
     isPost : false,
-    lang   : 'en'
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -120,17 +120,22 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -159,12 +164,538 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/" class="post-title-link" itemprop="url">(算法) 查找树详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-01 11:53:09" itemprop="dateCreated datePublished" datetime="2020-11-01T11:53:09+08:00">2020-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-11 11:45:47" itemprop="dateModified" datetime="2020-11-11T11:45:47+08:00">2020-11-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>分治思想是算法领域非常重要和常见的思路，而几乎所有的分治算法都可以转换成一颗树的结构。在查询问题中，这种树则一般被称为查找树。</p>
+<p>查找树的优点在于查询效率较高，以二叉树为例，其平均时间复杂度为O(logn)，在查询海量数据时也可以拥有很不错的查询速度。</p>
+<p>本章将会通过一步步的演进来详细阐述当前常见的几种查找树及其实现。包括普通二叉树，平衡二叉树，红黑树，B-TREE等。</p>
+<p>树的搜索是一件很简单的事情，不论树的结构如何演进，搜索的方式都基本是一致的，不同的树，其差异主要在于树的构建过程，如何高效的构建出一个适合查找的树，才是查找树研究的重点</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">(Mysql) 三、存储方式和索引原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-01 11:53:09" itemprop="dateCreated datePublished" datetime="2020-11-01T11:53:09+08:00">2020-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-05 10:08:28" itemprop="dateModified" datetime="2020-11-05T10:08:28+08:00">2020-11-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p>Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。</p>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>MyISAM引擎的存储特性为，每个表保存为一个文件，而且数据和索引是分开存储的。在磁盘上分为三类文件存储：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/mysql/Mysql-%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81/" class="post-title-link" itemprop="url">(Mysql) 四、事务和锁</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-01 11:53:09" itemprop="dateCreated datePublished" datetime="2020-11-01T11:53:09+08:00">2020-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-09 10:00:28" itemprop="dateModified" datetime="2020-11-09T10:00:28+08:00">2020-11-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="数据库的ACID原则"><a href="#数据库的ACID原则" class="headerlink" title="数据库的ACID原则"></a>数据库的ACID原则</h2><p>ACID是一组数据库设计原则，InnoDB完整的支持这种设计原则，其原则详情及InnoDB的实现方法如下列：</p>
+<ul>
+<li>A: 原子性，主要涉及事务(transaction)</li>
+<li>C: 一致性，主要涉及内部处理，包括双写缓存(doublewrite buffer)和崩溃恢复(crash recovery)功能。</li>
+<li>I: 隔离性，主要涉及事务(transaction)，尤其是事务的隔离级别。</li>
+<li>D: 持久性，很多时候与具体的硬件、网络环境相关。</li>
+</ul>
+<p>在本章中，主要讨论InnoDB引擎中关于事务的实现，以及事务是如何保证原子性和隔离性的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/mysql/Mysql-%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">(Mysql) 二、查询优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-30 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-30T11:53:09+08:00">2020-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-03 17:39:16" itemprop="dateModified" datetime="2020-11-03T17:39:16+08:00">2020-11-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Mysql的查询优化工作是Mysql所有技术中最有用最为立竿见影的一项。通过合理的优化，往往可以令SQL查询的执行效率以数量级的方式提升。</p>
+<p>因为网络通信等各种因素的干扰，对于查询时间很难得到一个准确的数值，在本章中所列的查询时间均为一个统计意义的均值，仅供参考，相比之下更重要的是不同查询之间的快慢对比。</p>
+<p>本章内容分为三大部分：</p>
+<ul>
+<li>执行计划分析</li>
+<li>索引优化</li>
+<li>关联查询优化</li>
+</ul>
+<p>在本章的最开始，默认所有的表除主键外没有任何索引。</p>
+<p>本章只会讲述优化手段的应用，关于优化的细节原理会在后续进行详解。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">(Mysql) 一、查询基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-28T11:53:09+08:00">2020-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-02 19:04:32" itemprop="dateModified" datetime="2020-11-02T19:04:32+08:00">2020-11-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="基础查询"><a href="#基础查询" class="headerlink" title="基础查询"></a>基础查询</h2><p>本节通过案例展示一些常用的Mysql基础查询。因内容太过基础故不作过多详细介绍。具体结果自己执行一下就知道了。非初学者可以完美跳过本节</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- sql中的基础查询</span></span><br><span class="line"><span class="comment">-- 查询一个表中的全部数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> departments;</span><br><span class="line"><span class="comment">-- 查询指定列的数据</span></span><br><span class="line"><span class="keyword">select</span> dept_name <span class="keyword">from</span> departments;</span><br><span class="line"><span class="comment">-- 统计查询结果的行数</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> departments;</span><br><span class="line"><span class="comment">-- 查询指定行数的数据 (limit 限制行数)</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employees <span class="keyword">limit</span> <span class="number">10</span>;</span><br><span class="line"><span class="comment">-- 将查询结果按指定列排序 (order by 语句，asc 为正序，desc 为倒序)</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employees <span class="keyword">order</span> <span class="keyword">by</span> emp_no <span class="keyword">asc</span> <span class="keyword">LIMIT</span> <span class="number">10</span>;</span><br><span class="line"><span class="comment">-- 查询指定行数区间的数据（limit 跳过行数，限制行数)</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employees <span class="keyword">order</span> <span class="keyword">by</span> emp_no <span class="keyword">asc</span> <span class="keyword">LIMIT</span> <span class="number">10</span>, <span class="number">10</span>;</span><br><span class="line"><span class="comment">-- 按列分组(group by 语句)</span></span><br><span class="line"><span class="keyword">select</span> gender, <span class="keyword">count</span>(*) <span class="keyword">from</span> employees <span class="keyword">group</span> <span class="keyword">by</span> gender;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询指定条件的数据（where 条件)</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> employees <span class="keyword">where</span> gender=<span class="string">&#x27;F&#x27;</span>;</span><br><span class="line"><span class="comment">-- 查询区间条件的数据(between and 条件)</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> employees <span class="keyword">where</span> birth_date <span class="keyword">between</span> <span class="string">&#x27;1960-01-01&#x27;</span> <span class="keyword">and</span> <span class="string">&#x27;1965-01-01&#x27;</span>;</span><br><span class="line"><span class="comment">-- 查询是否为空的列（is null 条件)</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> employees <span class="keyword">where</span> last_name <span class="keyword">is</span> <span class="literal">null</span>;</span><br><span class="line"><span class="comment">-- 查询列是否在列表中(in 条件)</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> employees <span class="keyword">where</span> gender <span class="keyword">in</span> (<span class="string">&#x27;F&#x27;</span>, <span class="string">&#x27;M&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一个稍复杂的综合案例：查询最高工资最高的10个员工的工号</span></span><br><span class="line"><span class="keyword">select</span> emp_no, <span class="keyword">max</span>(salary) salary <span class="keyword">from</span> salaries <span class="keyword">group</span> <span class="keyword">by</span> emp_no <span class="keyword">order</span> <span class="keyword">by</span> salary <span class="keyword">DESC</span> <span class="keyword">limit</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 联合查询：查询工资最高的10个员工的详细信息</span></span><br><span class="line"><span class="keyword">select</span> e.* <span class="keyword">from</span> </span><br><span class="line">	employees e, </span><br><span class="line">	salaries s  </span><br><span class="line"><span class="keyword">where</span> e.emp_no = s.emp_no <span class="keyword">group</span> <span class="keyword">by</span> e.emp_no <span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">max</span>(s.salary) <span class="keyword">DESC</span> <span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/mysql/Mysql-%E6%9F%A5%E8%AF%A2%E5%9F%BA%E7%A1%80/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/%E5%A4%A7%E7%BA%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/mysql/%E5%A4%A7%E7%BA%B2/" class="post-title-link" itemprop="url">Mysql笔记大纲</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-26 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-26T11:53:09+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-09 10:00:28" itemprop="dateModified" datetime="2020-11-09T10:00:28+08:00">2020-11-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="大纲概要"><a href="#大纲概要" class="headerlink" title="大纲概要"></a>大纲概要</h2><ul>
+<li>查询基础</li>
+<li>查询优化</li>
+<li>Mysql存储逻辑结构和索引原理</li>
+<li>锁和事务</li>
+<li>分库分表 （横向分、纵向分表，分表实现方案）</li>
+<li>分布式（主从、集群）</li>
+</ul>
+<h2 id="测试环境基本信息"><a href="#测试环境基本信息" class="headerlink" title="测试环境基本信息"></a>测试环境基本信息</h2><p>本Blog中关于Mysql的信息均基于Mysql 5.7版本，运行在2核4G，HDD云盘的云服务器上。</p>
+<p>案例数据库采用Mysql官方提供的案例数据库<a target="_blank" rel="noopener" href="https://github.com/datacharmer/test_db">Employees</a>。该数据库涵盖了常用的各种表形式，且数据量较大，便于展示效果。</p>
+<p>该数据集打包下载36.7MB，解压后总计168M大小，在上述服务器上导入需要大约25分钟。</p>
+<p>数据集包括：</p>
+<ul>
+<li>部门表 departments</li>
+<li>雇员表 employees</li>
+<li>部门-雇员关联表 dept_emp</li>
+<li>部门管理者表 dept_manager</li>
+<li>工资记录 salaries</li>
+<li>雇员职级表 titles</li>
+</ul>
+<p>具体内容可以见建表的<a target="_blank" rel="noopener" href="https://github.com/datacharmer/test_db/blob/master/employees.sql">SQL文件</a></p>
+<h2 id="一些资料博客："><a href="#一些资料博客：" class="headerlink" title="一些资料博客："></a>一些资料博客：</h2><p><a target="_blank" rel="noopener" href="https://dbaplus.cn/news-155-1531-1.html">https://dbaplus.cn/news-155-1531-1.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1573c4dcecd6">https://www.jianshu.com/p/1573c4dcecd6</a></p>
+<p><a target="_blank" rel="noopener" href="https://database.51cto.com/art/201901/589633.htm">https://database.51cto.com/art/201901/589633.htm</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b05ddec79927">https://www.jianshu.com/p/b05ddec79927</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/71204073">https://zhuanlan.zhihu.com/p/71204073</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jishuchi.com/read/mysql-interview/2803">https://www.jishuchi.com/read/mysql-interview/2803</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-%E7%BB%93%E8%AF%AD/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
       <meta itemprop="description" content="">
     </span>
 
@@ -182,22 +713,22 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2020-10-23 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-23T11:53:09+08:00">2020-10-23</time>
+              <time title="创建时间：2020-10-23 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-23T11:53:09+08:00">2020-10-23</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
                 </span>
@@ -236,12 +767,12 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6-%E5%88%86%E6%94%AF%E5%92%8C%E5%BE%AA%E7%8E%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
       <meta itemprop="description" content="">
     </span>
 
@@ -259,22 +790,22 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2020-10-22 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-22T12:00:00+08:00">2020-10-22</time>
+              <time title="创建时间：2020-10-22 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-22T12:00:00+08:00">2020-10-22</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-29 17:32:42" itemprop="dateModified" datetime="2020-10-29T17:32:42+08:00">2020-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
                 </span>
@@ -295,76 +826,14 @@
 <p>为了提升字节码校验的速度，Java1.6之后新增了一个概念叫做“栈映射帧”(stack map frame)。它不同于一个完整的栈帧但是在逻辑上有一些类似。它保存了在跳转指令执行时的栈中本地变量表和操作数栈。所以在学习分支和循环的实现之前，必须要了解栈映射帧的逻辑。</p>
 <p>在实际编写字节码程序之前，很可能对于栈映射帧并没有很深刻的体会。类加载器的校验过程中，当我们使用逻辑控制指令跳转到一个位置之后，会检验我们是否构建了一个新的栈映射帧。如果没有的话会报错。</p>
 <p>之前的程序中，我们都是一个顺序执行的程序。但是显然实际的程序中包含了大量的分支和循环操作。下面用一个例子来说明栈映射帧的作用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void fp(int a) &#123;</span><br><span class="line">    if(a &#x3D;&#x3D; 1) &#123;</span><br><span class="line">        String str &#x3D; &quot;append&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    String str &#x3D; &quot;out&quot;;</span><br><span class="line">    System.out.println(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在这个程序中，if中的str和外面的str虽然名字相同，却是两个不同的变量。此时我们分析程序的本地变量表，会发现本地变量表也出现了两种情况。当传入a!=1是，正常执行后面的指令，但是当传入a==1时，会出现同一个本地变量槽位有两个值的冲突。但是显然我们平时编码并没有遇到这个问题。这就是栈映射帧的功劳之一。</p>
-<p>根据刚刚描述的逻辑，我们可能直觉的认为会将if中的语句作为一个栈映射帧，但是实际的实现其实和我们刚刚描述的直觉并不完全相同。</p>
-<p>在字节码的实现中，在if结束后，<code>String str = &quot;out&quot;;</code>语句之前，会创建一个新的栈映射帧。新栈映射帧继承了栈帧中的本地变量表，并删除了最新的一个本地变量（即<code>String str = &quot;append&quot;;</code>)。同时构建了一个空的操作数栈。</p>
-<p>这样，在if代码段中的<code>str</code>的作用域就被打断。这也是我们内外的两个<code>str</code>变量不会冲突的原因。</p>
-<p>如果用我们更容易理解的Java来实现，其实它的代码更接近于下面的样子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (a !&#x3D; 1) &#123;</span><br><span class="line">    String str &#x3D; &quot;out&quot;;</span><br><span class="line">    System.out.println(str);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    String str &#x3D; &quot;append&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段程序的ASM实现代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">mv = cw.visitMethod(ACC_PUBLIC, <span class="string">&quot;fp&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">mv.visitCode();</span><br><span class="line">mv.visitInsn(ICONST_1);</span><br><span class="line">mv.visitVarInsn(ISTORE, <span class="number">1</span>);</span><br><span class="line">mv.visitVarInsn(ILOAD, <span class="number">1</span>);</span><br><span class="line">mv.visitInsn(ICONST_1);</span><br><span class="line">Label l2 = <span class="keyword">new</span> Label();</span><br><span class="line"><span class="comment">// 此处通过IF_ICMPNE来执行跳转到visitLabel(l2)的位置。</span></span><br><span class="line"><span class="comment">// 实际上是判断 a != 1</span></span><br><span class="line">mv.visitJumpInsn(IF_ICMPNE, l2);</span><br><span class="line">mv.visitLdcInsn(<span class="string">&quot;append&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ASTORE, <span class="number">2</span>);</span><br><span class="line">mv.visitLabel(l2);</span><br><span class="line"><span class="comment">// visitFrame方法即为构造一个新的栈帧</span></span><br><span class="line">mv.visitFrame(Opcodes.F_APPEND, <span class="number">1</span>, <span class="keyword">new</span> Object[]&#123;Opcodes.INTEGER&#125;, <span class="number">0</span>, <span class="keyword">null</span>);</span><br><span class="line">mv.visitLdcInsn(<span class="string">&quot;out&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ASTORE, <span class="number">2</span>);</span><br><span class="line">mv.visitFieldInsn(GETSTATIC, <span class="string">&quot;java/lang/System&quot;</span>, <span class="string">&quot;out&quot;</span>, <span class="string">&quot;Ljava/io/PrintStream;&quot;</span>);</span><br><span class="line">mv.visitVarInsn(ALOAD, <span class="number">2</span>);</span><br><span class="line">mv.visitMethodInsn(INVOKEVIRTUAL, <span class="string">&quot;java/io/PrintStream&quot;</span>, <span class="string">&quot;println&quot;</span>, <span class="string">&quot;(Ljava/lang/String;)V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">mv.visitInsn(RETURN);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;this&quot;</span>, <span class="string">&quot;Lcom/nature/dql/SuperMaper;&quot;</span>, <span class="keyword">null</span>, l0, l6, <span class="number">0</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;I&quot;</span>, <span class="keyword">null</span>, l1, l6, <span class="number">1</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;str&quot;</span>, <span class="string">&quot;Ljava/lang/String;&quot;</span>, <span class="keyword">null</span>, l4, l6, <span class="number">2</span>);</span><br><span class="line">mv.visitMaxs(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">mv.visitEnd();</span><br></pre></td></tr></table></figure>
-
-<p>老规矩，我们来看<code>visitFrame</code>方法的声明：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void visitFrame(</span><br><span class="line">    final int type, &#x2F;&#x2F; 类型</span><br><span class="line">    final int numLocal, &#x2F;&#x2F; 变更本地变量表长度</span><br><span class="line">    final Object[] local, &#x2F;&#x2F; 变更本地变量表对应类型</span><br><span class="line">    final int numStack, &#x2F;&#x2F; 变更操作数栈深度</span><br><span class="line">    final Object[] stack) &#x2F;&#x2F; 变更操作数栈数据类型</span><br></pre></td></tr></table></figure>
-
-<p>ASM为我们提供了五种创建栈帧的类型，分别如下：</p>
-<p>1、 F_FULL:</p>
-<p>创建包含有完整的本地变量表和操作数栈内容的栈映射帧。即需要输入完整的本地变量表和操作数栈。</p>
-<p>2、 F_APPEND:</p>
-<p>继承栈帧的本地变量表，并且可以附加1-3个本地变量。并且拥有一个空的操作数栈</p>
-<p>3、 F_CHOP:</p>
-<p>继承栈帧的本地变量表，并且可以移除最后的1-3个本地变量。并且拥有一个空的操作数栈，使用时只需要传入numLocal参数即可，其它均为空（0）即可。</p>
-<p>4、 F_SAME:</p>
-<p>与当前栈帧的本地变量表完全一样，并且拥有一个空的操作数栈，除type外的其它参数均为空（0）即可。</p>
-<p>5、 F_SAME1:</p>
-<p>与当前栈帧的本地变量表完全一样，并且操作数栈有一个值</p>
-<p>各自的具体应用就看具体情况而定了。</p>
-<h2 id="If分支逻辑"><a href="#If分支逻辑" class="headerlink" title="If分支逻辑"></a>If分支逻辑</h2><p><code>if</code>判断是程序中最常见的逻辑之一了。其实在我们上一节的内容中已经举例了一个最简单的if判断。</p>
-<p>在了解具体实现之前，我们需要在脑海中确立一个总的观念：字节码的逻辑控制其实只有一个语句：goto。</p>
-<p>在我们初学编程的时候，大多听说过臭名昭著的<code>goto</code>语句。这个能够打破顺序、分支、循环三大逻辑的神奇咒语仿佛会带来整个程序的崩溃。在Java中，也可以通过break语句来实现goto的效果，还保留了标签的语法。可是大多数人并没有用过，也没有想过要用这种方式来编写代码。</p>
-<p>但是在jvm的实现中，goto才是一切逻辑的基础。</p>
-<p>一个If分支逻辑的基本形式如：<code>a&gt;b?doA():doB()</code>。用字节码来实现的概要如下。</p>
-<p>为了省略，在本文后续内容均用<code>label(tag)</code>来代替具体的行号。代表跳转到<code>label(tag):</code>标记的位置。且均使用字节码代替具体的ASM语句。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">iload b</span><br><span class="line">if_icmple label(else) &#x2F;&#x2F; if(a &lt;&#x3D; b) goto label(else)</span><br><span class="line">invokevirtual doA &#x2F;&#x2F; 代表具体业务逻辑</span><br><span class="line">label(else): &#x2F;&#x2F; 在此处需要创建栈映射帧</span><br><span class="line">invokevirtual doB</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
-
-<p>需要创建的栈映射帧因为结构和内部逻辑的不同会有不同的具体情况，需要根据场景和自己的封装形式进行分析。所以在后续中只会注明需要创建栈映射帧的位置，而不会具体说明如何创建。创建栈映射帧的操作位于label标记之后。</p>
-<p>很多时候，我们的if并不是简单地一个条件，当遇到形如<code>if(a &amp;&amp; b)</code>的情形，我们需要将它拆分成简单逻辑的组合形式。</p>
-<p>例如：<code>if(a &amp;&amp; b)</code> 可以等价于：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if(a) &#123;</span><br><span class="line">    if(b) &#123;</span><br><span class="line">        doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>用字节码来实现也比较简单，就是连续进行多个判断，如果判断为false则跳转到if代码块的结尾。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">ifne label(end)</span><br><span class="line">iload b</span><br><span class="line">ifne label(end)</span><br><span class="line">invokevirtial doSomething</span><br><span class="line">label(end): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtual doElse</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
-
-<p>对于形如<code>if(a || b)</code>的代码则比较绕弯弯，简单的实现如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iload a</span><br><span class="line">ifne label(in)</span><br><span class="line">iload b</span><br><span class="line">ifeq label(out)</span><br><span class="line">label(in): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtial doSomething</span><br><span class="line">label(out): &#x2F;&#x2F; 此处需要创建栈映射帧</span><br><span class="line">invokevirtual doElse</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
-
-<p>这其中涉及到关于短路逻辑的实现，即当<code>a</code>为真的时候，会直接跳转到<code>label(in)</code>的位置执行逻辑。<code>b</code>的部分则与普通的if判断相同。</p>
-<p>因为短路逻辑跳转的存在，<code>a||b</code>的判断需要比<code>a&amp;&amp;b</code>的判断多创建一个栈映射帧</p>
-<h2 id="循环逻辑"><a href="#循环逻辑" class="headerlink" title="循环逻辑"></a>循环逻辑</h2><p>循环逻辑是在实际代码中另一种常见的逻辑。在字节码的实现中，可以将一个循环分为三个部分：</p>
-<ul>
-<li>循环体，包含循环内需要的业务逻辑</li>
-<li>循环判断</li>
-<li>循环点</li>
-</ul>
-<p>在代码中实现循环有for/while/do-while三种形式。其实就是这三个部分的排列不同形成的不同效果。</p>
-<p>一个经典的for循环代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">    cnt ++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以用goto的伪代码来拆解一下这个循环，对应上面说的几个要素：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">label(start):<span class="comment">// 循环点</span></span><br><span class="line"><span class="keyword">if</span>(i &gt; <span class="number">10</span>) <span class="function">goto <span class="title">label</span><span class="params">(end)</span> <span class="comment">// 循环判断</span></span></span><br><span class="line"><span class="function">cnt++</span>; <span class="comment">// 循环体</span></span><br><span class="line">i++;</span><br><span class="line"><span class="function">goto <span class="title">label</span><span class="params">(start)</span></span></span><br><span class="line"><span class="function"><span class="title">label</span><span class="params">(end)</span>:<span class="comment">// 循环点</span></span></span><br></pre></td></tr></table></figure>
-
-<p>用字节码来实现上面的这一段逻辑就非常清晰了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">bipush 0</span><br><span class="line">istore 1</span><br><span class="line">bipush 0</span><br><span class="line">istore 2</span><br><span class="line">label(start): &#x2F;&#x2F; 此处需要创建栈映射帧，循环点</span><br><span class="line">iload 2</span><br><span class="line">bipush 10</span><br><span class="line">if_icmpge label(end)  &#x2F;&#x2F; 循环判断</span><br><span class="line">iinc 1 1   &#x2F;&#x2F; 循环体</span><br><span class="line">iinc 2 1</span><br><span class="line">goto label(start)</span><br><span class="line">label(end): &#x2F;&#x2F; 此处需要创建栈映射帧，循环点</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
-
-<p>如果我们将循环体和循环判断的位置进行一下调换，在判断后跳转到label(start)的位置，就实现了do-while的循环。这种循环在字节码的实现中反倒显得更为顺畅一些，因为只需要一个循环点，创建一个栈映射帧</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">bipush 0</span><br><span class="line">istore 1</span><br><span class="line">bipush 0</span><br><span class="line">isotre 2</span><br><span class="line">label(start): &#x2F;&#x2F; 需要创建栈映射帧，循环点</span><br><span class="line">iinc 1 1  &#x2F;&#x2F; 循环体</span><br><span class="line">iinc 2 1</span><br><span class="line">iload 2</span><br><span class="line">bipush 10</span><br><span class="line">if_icmplt label(start) &#x2F;&#x2F; 循环判断</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
-
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>总而言之，相比于在代码中实现逻辑控制的多种方式，在字节码中只有跳转指令这一种方式。如果不怕逻辑混乱，开动脑筋，我们甚至可以做出很多超出代码限制的跳转方式，实现更为灵活的逻辑控制。</p>
-<p>本教程至今，已经完整描述类类、方法、变量、逻辑控制的相关技能。这些东西已经足够组成一个完整的程序，去实现我们所期待的任何功能。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/asm/ASM-%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6-%E5%88%86%E6%94%AF%E5%92%8C%E5%BE%AA%E7%8E%AF/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -382,12 +851,12 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
       <meta itemprop="description" content="">
     </span>
 
@@ -405,22 +874,22 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2020-10-21 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-21T11:53:09+08:00">2020-10-21</time>
+              <time title="创建时间：2020-10-21 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-21T11:53:09+08:00">2020-10-21</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-29 17:32:33" itemprop="dateModified" datetime="2020-10-29T17:32:33+08:00">2020-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
                 </span>
@@ -452,82 +921,14 @@
 <li>泛型信息</li>
 </ul>
 <p>使用ASM框架来创建这个类，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ClassWriter cw &#x3D; new ClassWriter(0);</span><br><span class="line">cw.visit(Opcodes.V1_8, ACC_PUBLIC + ACC_SUPER, &quot;com&#x2F;nature&#x2F;dql&#x2F;SuperMaper&quot;, </span><br><span class="line">    &quot;Ljava&#x2F;util&#x2F;HashMap&lt;Ljava&#x2F;lang&#x2F;String;Ljava&#x2F;lang&#x2F;Object;&gt;;&quot;,</span><br><span class="line">     &quot;java&#x2F;util&#x2F;HashMap&quot;, null);</span><br></pre></td></tr></table></figure>
-
-<p>为了了解每个参数的作用， 我们来看<code>visit</code>方法的声明，每个参数的作用见注释</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public final void visit(</span><br><span class="line">    final int version, &#x2F;&#x2F; 适用的Java版本</span><br><span class="line">    final int access,  &#x2F;&#x2F; 访问控制</span><br><span class="line">    final String name, &#x2F;&#x2F; 类名称</span><br><span class="line">    final String signature, &#x2F;&#x2F; 泛型声明</span><br><span class="line">    final String superName, &#x2F;&#x2F; 父类名称</span><br><span class="line">    final String[] interfaces) &#x2F;&#x2F; 实现接口</span><br><span class="line">&#123;...&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意在字节码中常见的两个名称问题：</p>
-<ul>
-<li>类名称是使用斜杠分割，而不是如同代码中使用点分割。</li>
-<li>类名称和类型声明的差异：作为类型声明，是：<code>Ljava/util/HashMap;</code>的形式，前面加<code>L</code>后面加<code>;</code>，所有的引用类型都需要如此修改。而基础类型则不需要，比如<code>int</code>类型的类型和名称都是<code>I</code>。</li>
-</ul>
-<h2 id="方法的构建"><a href="#方法的构建" class="headerlink" title="方法的构建"></a>方法的构建</h2><p>同样的，我们声明一个复杂的方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; T anyGet(String key, Class&lt;T&gt; clazz) throws Exception</span><br></pre></td></tr></table></figure>
-
-<p>编译后，可以获得该方法的声明部分字节码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T extends java.lang.Object&gt; T anyGet(java.lang.String, java.lang.Class&lt;T&gt;) throws java.lang.Exception;</span><br><span class="line">   descriptor: (Ljava&#x2F;lang&#x2F;String;Ljava&#x2F;lang&#x2F;Class;)Ljava&#x2F;lang&#x2F;Object;</span><br><span class="line">   flags: ACC_PUBLIC</span><br></pre></td></tr></table></figure>
-
-<p>使用ASM框架实现该方法的代码为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MethodVisitor mv &#x3D; cw.visitMethod(ACC_PUBLIC, &quot;anyGet&quot;, </span><br><span class="line">&quot;(Ljava&#x2F;lang&#x2F;String;Ljava&#x2F;lang&#x2F;Class;)Ljava&#x2F;lang&#x2F;Object;&quot;,</span><br><span class="line"> &quot;&lt;T:Ljava&#x2F;lang&#x2F;Object;&gt;(Ljava&#x2F;lang&#x2F;String;Ljava&#x2F;lang&#x2F;Class&lt;TT;&gt;;)TT;&quot;,</span><br><span class="line">  new String[]&#123;&quot;java&#x2F;lang&#x2F;Exception&quot;);</span><br></pre></td></tr></table></figure>
-
-<p>为了了解每个参数的作用， 我们来看<code>visit</code>方法的声明，每个参数的作用见注释:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public final MethodVisitor visitMethod(</span><br><span class="line">    final int access, &#x2F;&#x2F; 访问控制</span><br><span class="line">    final String name, &#x2F;&#x2F; 方法名称</span><br><span class="line">    final String descriptor, &#x2F;&#x2F; 方法参数及返回值描述</span><br><span class="line">    final String signature,  &#x2F;&#x2F; 方法参数及返回值的泛型声明</span><br><span class="line">    final String[] exceptions) &#x2F;&#x2F; 异常类型列表</span><br></pre></td></tr></table></figure>
-
-<p>方法的<code>descriptor</code>参数是对于输入类型和返回类型的声明，形式如：<code>()V</code>代表无输入无输出，括号内为入参列表，括号后面为返回值类型，这里的V即为void。</p>
-<p>在本案例的声明中可以看到，在编译为字节码后，泛型的部分被抹掉，返回类型被转换为<code>Object</code>。</p>
-<p>而在<code>signature</code>中，包含了入参和返回值的泛型信息。首先是泛型的声明<code>&lt;T:Ljava/lang/Object;&gt;</code>，在后面的入参和返回值信息中，使用<code>TT;</code>来替换声明的泛型。</p>
-<p>此处也可以认识到，在Java的泛型声明中，有形如：<code>&lt;T extends Map&gt;</code>的声明形式。而默认的<code>&lt;T&gt;</code>在编译后其实等价于<code>&lt;T extends Object&gt;</code>。</p>
-<h2 id="方法逻辑的编写"><a href="#方法逻辑的编写" class="headerlink" title="方法逻辑的编写"></a>方法逻辑的编写</h2><p>当完成了类和方法的声明之后，就可以通过<code>MethodVisitor</code>类来进行具体的方法内业务逻辑的编写。</p>
-<p>在开始编写代码之前，给出一些简单的非必须的建议：</p>
-<ul>
-<li>维护一个本地变量池，保存每一个本地变量的名称、slot、类型等信息。最后输出本地变量表时会有大用。可以用Map之类来实现。</li>
-<li>维护几个int型变量，分别记录当前栈深度、本地变量池大小的信息，以及这两个值的最大值。</li>
-<li>维护一个本地变量池的副本，以后做栈帧的时候同样会用到。</li>
-</ul>
-<p>方法逻辑的编写分为几个部分：</p>
-<ul>
-<li>code开始</li>
-<li>编写逻辑</li>
-<li>记录本地变量表</li>
-<li>标明最大栈深度、本地变量表大小</li>
-<li>完成编写</li>
-</ul>
-<p>让我们回到第一章的四则运算案例，其中的方法体字节码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Code:</span><br><span class="line">    stack&#x3D;3, locals&#x3D;4, args_size&#x3D;1</span><br><span class="line">        0: iconst_3</span><br><span class="line">        1: istore_1</span><br><span class="line">        2: iconst_4</span><br><span class="line">        3: istore_2</span><br><span class="line">        4: iconst_5</span><br><span class="line">        5: istore_3</span><br><span class="line">        6: iload_1</span><br><span class="line">        7: iload_2</span><br><span class="line">        8: iload_3</span><br><span class="line">        9: imul</span><br><span class="line">        10: iadd</span><br><span class="line">        11: ireturn</span><br><span class="line"></span><br><span class="line">    LocalVariableTable:</span><br><span class="line">    Start  Length  Slot  Name   Signature</span><br><span class="line">        0      12     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">        2      10     1     a   I</span><br><span class="line">        4       8     2     b   I</span><br><span class="line">        6       6     3     c   I</span><br></pre></td></tr></table></figure>
-
-<p>用ASM框架编写代码来实现如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mv.visitCode(); <span class="comment">// 标记Code开始</span></span><br><span class="line"><span class="comment">// 下面开始编写业务逻辑</span></span><br><span class="line">Label l0 = <span class="keyword">new</span> Label();</span><br><span class="line">mv.visitLabel(l0);</span><br><span class="line">mv.visitLineNumber(<span class="number">20</span>, l0);</span><br><span class="line">mv.visitInsn(ICONST_3);</span><br><span class="line">mv.visitVarInsn(ISTORE, <span class="number">1</span>);</span><br><span class="line">Label l1 = <span class="keyword">new</span> Label();</span><br><span class="line">mv.visitLabel(l1);</span><br><span class="line">mv.visitLineNumber(<span class="number">21</span>, l1);</span><br><span class="line">mv.visitInsn(ICONST_4);</span><br><span class="line">mv.visitVarInsn(ISTORE, <span class="number">2</span>);</span><br><span class="line">Label l2 = <span class="keyword">new</span> Label();</span><br><span class="line">mv.visitLabel(l2);</span><br><span class="line">mv.visitLineNumber(<span class="number">22</span>, l2);</span><br><span class="line">mv.visitInsn(ICONST_5);</span><br><span class="line">mv.visitVarInsn(ISTORE, <span class="number">3</span>);</span><br><span class="line">Label l3 = <span class="keyword">new</span> Label();</span><br><span class="line">mv.visitLabel(l3);</span><br><span class="line">mv.visitLineNumber(<span class="number">23</span>, l3);</span><br><span class="line">mv.visitVarInsn(ILOAD, <span class="number">1</span>);</span><br><span class="line">mv.visitVarInsn(ILOAD, <span class="number">2</span>);</span><br><span class="line">mv.visitVarInsn(ILOAD, <span class="number">3</span>);</span><br><span class="line">mv.visitInsn(IMUL);</span><br><span class="line">mv.visitInsn(IADD);</span><br><span class="line">mv.visitInsn(IRETURN);</span><br><span class="line">Label l4 = <span class="keyword">new</span> Label();</span><br><span class="line">mv.visitLabel(l4);</span><br><span class="line"><span class="comment">// 记录本地变量表</span></span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;this&quot;</span>, <span class="string">&quot;Lcom/nature/dql/SuperMaper;&quot;</span>, <span class="keyword">null</span>, l0, l4, <span class="number">0</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;I&quot;</span>, <span class="keyword">null</span>, l1, l4, <span class="number">1</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;b&quot;</span>, <span class="string">&quot;I&quot;</span>, <span class="keyword">null</span>, l2, l4, <span class="number">2</span>);</span><br><span class="line">mv.visitLocalVariable(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;I&quot;</span>, <span class="keyword">null</span>, l3, l4, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 记录最大的栈深度和本地变量表大小</span></span><br><span class="line">mv.visitMaxs(<span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line"><span class="comment">// 方法完成</span></span><br><span class="line">mv.visitEnd();</span><br></pre></td></tr></table></figure>
-
-<p>其中值得注意的是本地变量表的记录，在之前已经说明过本地变量表的字段含义。</p>
-<p>在此同样根据<code>visitLocalVariable</code>方法的声明来看参数含义：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void visitLocalVariable(</span><br><span class="line">    final String name, &#x2F;&#x2F; 变量的名称</span><br><span class="line">    final String descriptor, &#x2F;&#x2F; 变量的类型声明</span><br><span class="line">    final String signature, &#x2F;&#x2F; 变量的泛型信息</span><br><span class="line">    final Label start, &#x2F;&#x2F; 变量的作用域起始</span><br><span class="line">    final Label end, &#x2F;&#x2F; 变量的作用域终止</span><br><span class="line">    final int index) &#x2F;&#x2F; 变量的slot序号</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，其作用域的起始和终止位置，都是利用Label来实现的。在编写字节码的时候，我们很难知道自己的字节码在实现中的具体行号，利用Label对代码的位置进行标记即可实现该目的。</p>
-<p>Label是可以先声明，先使用，后定位的。我们可以先定义一个Label，然后正常的使用它，最后调用visitLabel来确定该Label对应的位置即可。之前所有使用该Label的位置都会被替换为最后具体的位置。</p>
-<h2 id="方法的调用"><a href="#方法的调用" class="headerlink" title="方法的调用"></a>方法的调用</h2><p>ASM提供了MethodVisitor.visitMethodInsn方法来实现方法的调用，首先来看方法声明：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void visitMethodInsn(</span><br><span class="line">    final int opcode,   &#x2F;&#x2F; 调用方式</span><br><span class="line">    final String owner, &#x2F;&#x2F; 方法所有类</span><br><span class="line">    final String name,  &#x2F;&#x2F; 方法名称</span><br><span class="line">    final String descriptor, &#x2F;&#x2F; 方法出入参描述</span><br><span class="line">    final boolean isInterface) &#x2F;&#x2F; 方法所有者是否是接口</span><br></pre></td></tr></table></figure>
-
-<p>opcode放在最后，先看其它的参数：</p>
-<ul>
-<li>owner与name：仅仅一个方法名并不能定位一个方法，一个完整的方法形如：<code>java/lang/Object.toString</code>，就是一个owner.name的形式</li>
-<li>descriptor：可以详见上一节中声明一个方法时传入的入参、返回值类型描述，通常形如<code>()Ljava/lang/String;</code>。</li>
-<li>isInterface：owner是否是一个接口。</li>
-</ul>
-<p>然后我们来看opcode，在JVM字节码中提供了五种调用方法的opcode：</p>
-<ul>
-<li>invokespecial: 调用构造方法、私有方法或父类方法</li>
-<li>invokestatic: 调用静态方法</li>
-<li>invokevirtual: 调用实例方法</li>
-<li>invokeinterface: 调用接口方法</li>
-<li>invokedynamic: 动态推断方法；</li>
-</ul>
-<p>前面四种方法看文本描述都可以清晰地知道是在什么情况下使用。invokedynamic则是JVM指令集中最令人困惑的一个。</p>
-<p>invokedynamic是在Java8中才加入的新特性，是JVM对于更加动态的类型的一种支持，用于降低反射编程带来的开销。我们在Java8中用到的很多新的语法特性都得益于invokedynamic指令，诸如lambda表达式等。该指令最终仍旧会执行invokevirtual/invokeinterface指令。只不过推迟到运行时再进行具体的推断。</p>
-<p>鉴于该指令的复杂性，在本教程中不进行介绍和使用，我们也不会有用字节码写lambda表达式之类的需求吧……不会吧不会吧……</p>
-<p>关于各种调用方法的更详细的案例描述可以可以参见<a target="_blank" rel="noopener" href="https://www.infoq.cn/article/Invokedynamic-Javas-secret-weapon">这篇博客</a>。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本章基本完整的介绍了如何去实现一个类。在生产中直接使用ASM框架是很麻烦的一件事，会让你的代码乱成一团。编写一个类的时候，对ClassVisitor/MethodVisitor进行进一步的抽象封装，维护一个自己的上下文信息容器，可以帮助你更好的实现更复杂的功能。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/asm/ASM-%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -545,12 +946,12 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
       <meta itemprop="description" content="">
     </span>
 
@@ -568,22 +969,22 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2020-10-20 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-20T11:53:09+08:00">2020-10-20</time>
+              <time title="创建时间：2020-10-20 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-20T11:53:09+08:00">2020-10-20</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-29 17:32:46" itemprop="dateModified" datetime="2020-10-29T17:32:46+08:00">2020-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
                 </span>
@@ -612,449 +1013,14 @@
 <p>其它的数据类型都会被转变为基本类型进行操作，比如boolean，虽然在声明中用Z表示，但是操作时都是按照int类型进行操作。</p>
 <p>需要注意的是，在对基本类型进行字节码操作时，如果需要装箱、拆箱操作，需要手动编写字节码调用对应的方法。否则会出现数据类型错误。</p>
 <p>引用类型是一个统称，除了以上四种基本类型之外的变量都是引用类型，包括字符串、对象实例等变量。</p>
-<h2 id="数据类型的表示"><a href="#数据类型的表示" class="headerlink" title="数据类型的表示"></a>数据类型的表示</h2><p>在声明一个类、方法的时候需要用到数据类型的描述信息。与操作符用小写字母不同，基本数据类型的描述信息是大写字母，并且还有一些事基本类型的扩展，常用的包括以下几种：</p>
-<p>I(int), L(long), F(float), D(double), V(void), Z(boolean)</p>
-<p>在声明中，引用类型会直接描述具体的类型，比如<code>java.lang.Object</code>，会描述为<code>Ljava/lang/Object;</code></p>
-<p>在数组的声明中，用<code>[</code>来表示数组，比如<code>[I;</code>表示一个int[]</p>
-<p>引用类型的数组描述在类型描述之前增加一个<code>[</code>，比如<code>Object[]</code>类型会被描述为：<code>[Ljava/lang/Object;</code>，注意后面的分号只有一个。</p>
-<h2 id="操作指令"><a href="#操作指令" class="headerlink" title="操作指令"></a>操作指令</h2><p>Java的字节码操作指令分为以下几个大类：</p>
-<ul>
-<li>栈操作</li>
-<li>运算指令</li>
-<li>类型转换</li>
-<li>流程控制</li>
-<li>对象操作</li>
-<li>锁和同步</li>
-</ul>
-<p>如果从广义上来讲，前面四个类型的操作都是栈操作指令。</p>
-<p>字节码指令通常由几个部分组成：数据类型，操作指令，地址。</p>
-<p>例如：iload_3，其中i代表int类型，load代表将数据推入栈顶，3代表数据在本地变量表slot=3的位置。</p>
-<p>另一种情况则是对于数组的操作，数组（array)，所以数组操作基本就是在操作指令的前面加一个a。</p>
-<p>例如：faload， 消耗栈顶两个元素：<code>array, idx</code>， 将<code>array[idx]</code>推入栈顶。</p>
-<p>在操作指令中有一些自带常量的操作符，例如<code>iload_0</code>，其等价于<code>iload 0</code>，出于统一便捷记忆，除了const常量操作之外，其它的操作符均不赘述包含下划线的常量操作符。</p>
-<p>在操作符中，涉及到long和double类型的操作，会有一些特定的操作诸如<code>pop2</code>操作符。基本原则是long和double相当于两个int/float，所以操作int的指令不能操作long，操作long的指令相当于操作两个int。</p>
-<h3 id="栈操作"><a href="#栈操作" class="headerlink" title="栈操作"></a>栈操作</h3><p>栈操作包含：</p>
-<p><em>const</em>： 推送一个常量值到栈顶，int型支持0-5， float支持0-2，long和double仅支持0和1。</p>
-<p>案例：<code>iconst_1</code></p>
-<p><em>load/aload</em>： 将本地变量推送至栈顶，支持i/l/f/d/a类型。支持一个参数代表本地变量slot。支持数组操作。</p>
-<p>案例：<code>fload 1</code></p>
-<p><em>store/astore</em>：将栈顶元素保存到指定slot的本地变量，支持i/l/f/d/a类型，需要一个参数代表本地变量slot，支持数组操作。</p>
-<p>案例：<code>istore 1</code></p>
-<p><em>pop/pop2</em>：将栈顶元素推出，pop不支持long/double类型，pop2支持long/double类型，对于其它类型则相当于两次pop操作。</p>
-<p>案例：<code>pop</code></p>
-<p><em>dup/dup_x1/dup_x2/dup2/dup2_x1/dup2_x2</em>：复制栈顶元素，x1代表复制两次，x2代表复制三次，dup2对应long/double类型。</p>
-<p>案例：<code>dup</code></p>
-<p><em>bipush/sipush</em> 将一个常量推送至栈顶，bipush仅支持8位，即<code>-128~127</code>，sipush支持16位，即<code>-32768~32767</code></p>
-<p>案例：<code>bipush 10</code></p>
-<p><em>ldc</em> 将一个int/float/string型常量从常量池推送至栈顶</p>
-<p>案例：<code>ldc &quot;Hello&quot;</code></p>
-<h3 id="运算操作："><a href="#运算操作：" class="headerlink" title="运算操作："></a>运算操作：</h3><p>运算操作包括：</p>
-<ul>
-<li>add;sub;mul;div： 加减乘除，支持i/l/f/d</li>
-<li>rem：求余，支持i/l/f/d</li>
-<li>neg：求负，支持i/l/f/d</li>
-<li>shl; shr : 位运算，左移，右移支持i/iu(无符号)/l，</li>
-<li>and; or; xor：与，或，异或支持i/l</li>
-<li>iinc：自增，约等于 i++， 仅限整数</li>
-</ul>
-<h3 id="类型转换："><a href="#类型转换：" class="headerlink" title="类型转换："></a>类型转换：</h3><p>类型转换支持在基本类型之间进行转换，同样需要注意可能存在的精度丢失问题。</p>
-<p>支持i(int), l(long), f(float), d(double)四种基本类型之间的任意转换，指令类似：<code>i2l</code>,即为int转换成long。</p>
-<p>还支持：<code>i2b;i2c;i2s</code>三种，分别转换至b(byte), c(char)和s(short)。</p>
-<h3 id="流程控制："><a href="#流程控制：" class="headerlink" title="流程控制："></a>流程控制：</h3><p>常见的if语句中的条件判断基本都是用对比操作实现的。</p>
-<p><em>cmp</em>: 对比操作，支持l/f/d，返回1/0/-1作为结果。有<code>cmpl; cmpg</code>两种，分别对比小于和大于。</p>
-<p>案例：<code>lcmpl</code></p>
-<p><em>if</em>： 当栈顶为int（boolean）时，和0进行对比：<code>eq/ne/lt/ge/gt/le</code>六种操作。分别表示<code>== != &lt; &gt;= &gt; &lt;=</code></p>
-<p>案例：<code>ifge</code></p>
-<p><em>if_icmp</em>： 对比并跳转操作，对比栈顶两个元素，对比部分支持情况和if一致，当对比结果为真时，跳转到指定代码行，通常用Label指定。</p>
-<p>案例：<code>if_icmpge 23</code></p>
-<p><em>goto</em>： 无条件跳转，和java中隐含的goto语句是同一个意思。</p>
-<p><em>return</em>： 返回值，将栈顶元素作为返回值返回。支持：i/l/f/d/a以及void类型。直接用<code>return</code>指令就是返回void。</p>
-<p>案例：<code>areturn</code></p>
-<h3 id="对象操作："><a href="#对象操作：" class="headerlink" title="对象操作："></a>对象操作：</h3><p><em>getstatic/putstatic</em> 获取、设置类的静态变量</p>
-<p><em>getfield/putfield</em> 获取、设置类的成员变量</p>
-<p><em>invokevirtual</em> 调用实例方法</p>
-<p><em>invokespecial</em> 调用超类构建方法、实例初始化方法、私有方法</p>
-<p><em>invokestatic</em> 调用静态方法</p>
-<p><em>invokeinterface</em> 调用接口方法</p>
-<p><em>invokedynamic</em> 动态判断调用方法</p>
-<p><em>new</em> 构建一个新对象并放入栈顶</p>
-<p><em>newarray</em> 构建一个基础类型数组</p>
-<p><em>anewarray</em> 构建一个引用类型数组</p>
-<p><em>arraylength</em> 获得数组长度</p>
-<p><em>checkcast</em> 类型转换校验</p>
-<p><em>instanceof</em> 就是instanceof</p>
-<h3 id="锁和同步："><a href="#锁和同步：" class="headerlink" title="锁和同步："></a>锁和同步：</h3><p><em>monitorenter</em> 获得对象的锁</p>
-<p><em>monitorexit</em> 释放对象的锁</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本节详细描述了在Java字节码中常用的部分指令，但是本文仅仅是一个概述和助记，不完整包含全部操作符。具体的全部操作符可以见表<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008722128">JVM虚拟机字节码指令表</a></p>
-<p>了解了操作符之后，就已经掌握了编写字节码程序的基本知识。建议读者将本篇和上一篇的Hello World程序相印证以加深印象。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aya的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/asm/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">(ASM) 二、简单的Hello World实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-19 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-19T12:00:00+08:00">2020-10-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="ASM-简介"><a href="#ASM-简介" class="headerlink" title="ASM 简介"></a>ASM 简介</h2><p><a target="_blank" rel="noopener" href="https://asm.ow2.io/">ASM</a>，是纯Java实现的Java字节码框架，其特点是尽可能的小而快。根据官网给出的<a target="_blank" rel="noopener" href="https://asm.ow2.io/performance.html">Benchmark</a>，其生成类的性能是其它框架的数倍。</p>
-<p>轻量级和高性能是有代价的，相比于<a target="_blank" rel="noopener" href="https://github.com/jboss-javassist/javassist">Javassist</a>之类的字节码操作库，ASM的visitor模式抽象层级更低，需要用户对底层字节码指令的认识更深入。</p>
-<p>也恰恰是这种特点，使得ASM成为了学习字节码增强技术的最佳选择。</p>
-<p>ASM框架的引入非常简单，只需要引入一个Maven依赖即可。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.ow2.asm<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>asm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>9.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>也可以可以到 mvnrepository.com 搜索ASM以查看更多的版本。</p>
-<h2 id="流程概述"><a href="#流程概述" class="headerlink" title="流程概述"></a>流程概述</h2><p>要实现一个HelloWorld程序，我们首先要在心里对需要做的工作有一个计划。首先用Java写一个：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>回想一下我们刚刚做了什么操作：</p>
-<ul>
-<li>新建一个Hello 类</li>
-<li>新建一个show 方法</li>
-<li>调用System.out.println方法</li>
-<li>输入“Hello World”</li>
-</ul>
-<p>接下来寻找用ASM框架实现这些操作的方法。当我们自己编写字节码时，有两点需要注意的。</p>
-<ol>
-<li>需要自己显式的实现构造方法。</li>
-<li>需要先将参数入栈，然后调用方法。</li>
-</ol>
-<p>所以用ASM实现Hello World程序的的操作如下：</p>
-<ul>
-<li>新建一个ClassWriter，实现Hello类</li>
-<li>新建一个MethodVisitor，实现无参构造方法</li>
-<li>新建一个MethodVisitor，实现show方法</li>
-<li>加载System.out静态变量（还记得方法的第一个参数是”this”么）</li>
-<li>加载Hello World常量</li>
-<li>调用println方法</li>
-</ul>
-<p>现在设计清楚了，下一步就是用代码来完成这项工作。</p>
-<h2 id="代码实现："><a href="#代码实现：" class="headerlink" title="代码实现："></a>代码实现：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ClassWriter <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1、新建一个ClassWriter</span></span><br><span class="line">    ClassWriter classWriter = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 声明类 public class Hello</span></span><br><span class="line">    classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, <span class="string">&quot;study/asm/Hello&quot;</span>, <span class="keyword">null</span>, <span class="string">&quot;java/lang/Object&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2、新建一个MethodVisitor，实现无参构造函数</span></span><br><span class="line">    MethodVisitor constructor = classWriter.visitMethod(Opcodes.ACC_PUBLIC, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">// 无参构造方法会调用java.lang.Object(父类)的构造方法</span></span><br><span class="line">    constructor.visitVarInsn(Opcodes.ALOAD, <span class="number">0</span>);</span><br><span class="line">    constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, <span class="string">&quot;java/lang/Object&quot;</span>, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    constructor.visitInsn(Opcodes.RETURN);</span><br><span class="line">    constructor.visitMaxs(<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line">    constructor.visitEnd();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3、构造show方法</span></span><br><span class="line">    MethodVisitor showMethod = classWriter.visitMethod(Opcodes.ACC_PUBLIC, <span class="string">&quot;show&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4、加载System.out静态变量</span></span><br><span class="line">    showMethod.visitFieldInsn(Opcodes.GETSTATIC, <span class="string">&quot;java/lang/System&quot;</span>, <span class="string">&quot;out&quot;</span>, <span class="string">&quot;Ljava/io/PrintStream;&quot;</span>);</span><br><span class="line">    <span class="comment">// 5、加载Hello World常量</span></span><br><span class="line">    showMethod.visitLdcInsn(<span class="string">&quot;Hello world&quot;</span>);</span><br><span class="line">    <span class="comment">// 6、调用System.out.println方法</span></span><br><span class="line">    showMethod.visitMethodInsn(Opcodes.INVOKEVIRTUAL, <span class="string">&quot;java/io/PrintStream&quot;</span>, <span class="string">&quot;println&quot;</span>, <span class="string">&quot;(Ljava/lang/String;)V&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    showMethod.visitInsn(Opcodes.RETURN);</span><br><span class="line">    showMethod.visitMaxs(<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">    showMethod.visitEnd();</span><br><span class="line"></span><br><span class="line">    classWriter.visitEnd();</span><br><span class="line">    <span class="keyword">return</span> classWriter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><p>现在生成好了一个Hello类，下一步问题就是如何创建一个实例并调用show方法。</p>
-<p>这里需要用到类加载器相关的知识。Java通过类加载器加载一段byte[]数据来加载一个类。然后就可以通过该类加载器获得该类的实例。</p>
-<p>在目前阶段，可以通过反射的方法最终调用show方法。当然以后也可以通过实现接口的方式来实现直接调用。</p>
-<p>简要代码如下： </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleAsm</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClassWriter <span class="title">hello</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SimpleAsm asm = <span class="keyword">new</span> SimpleAsm();</span><br><span class="line">        ClassWriter classWriter = asm.hello()</span><br><span class="line">        <span class="comment">// 将类写入一段byte[]</span></span><br><span class="line">        <span class="keyword">byte</span>[] code = classWriter.toByteArray();</span><br><span class="line">        <span class="comment">// 通过类加载器加载</span></span><br><span class="line">        Class clazz = asm.defineClass(<span class="string">&quot;study.asm.Hello&quot;</span>, code, <span class="number">0</span>, code.length);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过反射创建实例并调用show方法</span></span><br><span class="line">            Object ins = clazz.newInstance();</span><br><span class="line">            Method show = clazz.getMethod(<span class="string">&quot;show&quot;</span>);</span><br><span class="line">            show.invoke(ins);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本节是通过将一个Hello World的Java程序转换为字节码实现，来直观的体验字节码生成程序的流程。并且初次尝试了ASM框架的应用。在本案例中应用的是ASM的核心接口，采用visitor模式。ASM还支持TreeApi的方式实现同样的功能。本教程主要在于Java字节码的知识，对ASM框架感兴趣的读者可以自行查看ASM官网的用户手册。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aya的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/asm/ASM-Java%E5%AD%97%E8%8A%82%E7%A0%81%E7%AE%80%E8%A6%81%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">(ASM) 一、Java字节码简要基础知识</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-16 12:00:00" itemprop="dateCreated datePublished" datetime="2020-10-16T12:00:00+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="一、JVM的执行原理"><a href="#一、JVM的执行原理" class="headerlink" title="一、JVM的执行原理"></a>一、JVM的执行原理</h2><h3 id="1、从逆波兰式说起"><a href="#1、从逆波兰式说起" class="headerlink" title="1、从逆波兰式说起"></a>1、从逆波兰式说起</h3><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E7%A4%BA%E6%B3%95">逆波兰式</a>是一种数学表达式方法，可以将四则运算转换成一种不需要括号即可表达优先级的表达式。</p>
-<p>举例来说，数学表达式<code>3+4*5</code>转换成逆波兰式就是<code>345*+</code>。其中的操作符代表前面两个结果的操作，比如<code>*</code>操作即为<code>4*5</code>，<code>+</code>操作则是 <code>3 + (4*5)</code>，因为<code>+</code>前面的两个结果分别是3和<code>*</code>操作的结果。</p>
-<p>逆波兰式从计算机语言的角度来讲，是一颗语法树的后序遍历结果。它的好处在于，可以方便的利用栈操作来进行四则运算。同样以<code>345*+</code>的逆波兰式为例，其计算顺序如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">push 3 -&gt; [3]</span><br><span class="line">push 4 -&gt; [3,4]</span><br><span class="line">push 5 -&gt; [3,4,5]</span><br><span class="line">invoke * -&gt; [3,20]</span><br><span class="line">invoke + -&gt; [23]</span><br></pre></td></tr></table></figure>
-<p>左侧是操作，右侧是栈中数据。根据逆波兰式进行运算即可得到最终结果23。</p>
-<p><em>注意！</em>让我们给栈的操作换一个名字，就可以得到如下的程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ICONST_3</span><br><span class="line">ICONST_4</span><br><span class="line">ICONST_5</span><br><span class="line">IMUL</span><br><span class="line">IADD</span><br></pre></td></tr></table></figure>
-
-<p>这一段代码就是一段Java的字节码指令，其执行结果同样是23。</p>
-<h3 id="2、JVM字节码的执行"><a href="#2、JVM字节码的执行" class="headerlink" title="2、JVM字节码的执行"></a>2、JVM字节码的执行</h3><p>经过上面的例子，相信读者应当对Java的执行原理有了一个比较直观的认识。有一定Java基础知识的同学应当已经联想到了Java中的栈的概念。</p>
-<p>简单来讲，JVM执行字节码文件，就是在一个栈上执行不同的字节码指令。当然用于工业实践的JVM必然还有更多神奇的优化，但是其根本原理是不会改变的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这里容易出现一种误解，即字节码就是一个栈。</span><br><span class="line"></span><br><span class="line">一个字节码文件描述的是“对操作数栈的操作”（当然还包含其它内容），实际上的操作数栈只存在于内存和你我的脑海中。所以在编写字节码文件，尤其是遇到涉及分支、循环结构的程序时，必须考虑好栈的内容是什么样的。否则必然会出错。</span><br></pre></td></tr></table></figure>
-
-<p>在JVM的栈帧中，包含有本地变量表、操作数栈、程序计数器、返回地址等部分。在我们编写字节码时，需要关注的主要在于：</p>
-<ul>
-<li>本地变量表(Local Variable Table)，我们需要将用到的本地变量记录在本地变量表的对应槽位(slot)中。</li>
-<li>操作数栈，我们的字节码程序描述的就是对操作数栈的操作。也是我们程序实际运行的位置。</li>
-<li>程序计数器，我们需要用Label来标记程序指令对应的计数器位置，通过控制程序计数器来实现分支、循环等逻辑控制。</li>
-</ul>
-<h2 id="二、字节码文件内容概述"><a href="#二、字节码文件内容概述" class="headerlink" title="二、字节码文件内容概述"></a>二、字节码文件内容概述</h2><h3 id="1、字节码查看"><a href="#1、字节码查看" class="headerlink" title="1、字节码查看"></a>1、字节码查看</h3><p>字节码是以二进制方式存储的，显然的，我们不可能用人脑去解析二进制来查看字节码。</p>
-<p>Java自带了class文件的查看工具，可以将class文件转换成字节码指令文本进行查看。我们以刚刚写的四则运算案例为例。完整的Java代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class AsmExample &#123;</span><br><span class="line"></span><br><span class="line">    public int calc() &#123;</span><br><span class="line">        int a &#x3D; 3;</span><br><span class="line">        int b &#x3D; 4;</span><br><span class="line">        int c &#x3D; 5;</span><br><span class="line">        return (a+b*c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以注意到这里为3、4、5分别赋值了一个变量，是因为<code>3+4*5</code>这种表达式在编译时会被直接编译为23的常量，无法体现预期效果。</p>
-<p>该文件编译得到AsmExample.class文件，打开命令行终端，执行以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -v -l -p -s AsmExample.class</span><br></pre></td></tr></table></figure>
-
-<p>具体的几个参数的作用，可以用<code>javap -help</code>自行查看。总之回车之后，终端中即可显示出该class文件的字节码如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">Classfile &#x2F;Users&#x2F;didi&#x2F;code&#x2F;java-test&#x2F;target&#x2F;test-classes&#x2F;com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample.class</span><br><span class="line">  Last modified 2020-10-16; size 432 bytes</span><br><span class="line">  MD5 checksum 9a1851023d512efc7e2f91bc2a65ada0</span><br><span class="line">  Compiled from &quot;AsmExample.java&quot;</span><br><span class="line">public class com.xiaojukeji.aya.AsmExample</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br><span class="line">Constant pool:</span><br><span class="line">   #1 &#x3D; Methodref          #3.#19         &#x2F;&#x2F; java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 &#x3D; Class              #20            &#x2F;&#x2F; com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">   #3 &#x3D; Class              #21            &#x2F;&#x2F; java&#x2F;lang&#x2F;Object</span><br><span class="line">   #4 &#x3D; Utf8               &lt;init&gt;</span><br><span class="line">   #5 &#x3D; Utf8               ()V</span><br><span class="line">   #6 &#x3D; Utf8               Code</span><br><span class="line">   #7 &#x3D; Utf8               LineNumberTable</span><br><span class="line">   #8 &#x3D; Utf8               LocalVariableTable</span><br><span class="line">   #9 &#x3D; Utf8               this</span><br><span class="line">  #10 &#x3D; Utf8               Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">  #11 &#x3D; Utf8               calc</span><br><span class="line">  #12 &#x3D; Utf8               ()I</span><br><span class="line">  #13 &#x3D; Utf8               a</span><br><span class="line">  #14 &#x3D; Utf8               I</span><br><span class="line">  #15 &#x3D; Utf8               b</span><br><span class="line">  #16 &#x3D; Utf8               c</span><br><span class="line">  #17 &#x3D; Utf8               SourceFile</span><br><span class="line">  #18 &#x3D; Utf8               AsmExample.java</span><br><span class="line">  #19 &#x3D; NameAndType        #4:#5          &#x2F;&#x2F; &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #20 &#x3D; Utf8               com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">  #21 &#x3D; Utf8               java&#x2F;lang&#x2F;Object</span><br><span class="line">&#123;</span><br><span class="line">  public com.xiaojukeji.aya.AsmExample();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;1, locals&#x3D;1, args_size&#x3D;1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  &#x2F;&#x2F; Method java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 3: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line"></span><br><span class="line">  public int calc();</span><br><span class="line">    descriptor: ()I</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;3, locals&#x3D;4, args_size&#x3D;1</span><br><span class="line">         0: iconst_3</span><br><span class="line">         1: istore_1</span><br><span class="line">         2: iconst_4</span><br><span class="line">         3: istore_2</span><br><span class="line">         4: iconst_5</span><br><span class="line">         5: istore_3</span><br><span class="line">         6: iload_1</span><br><span class="line">         7: iload_2</span><br><span class="line">         8: iload_3</span><br><span class="line">         9: imul</span><br><span class="line">        10: iadd</span><br><span class="line">        11: ireturn</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 2</span><br><span class="line">        line 8: 4</span><br><span class="line">        line 9: 6</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0      12     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">            2      10     1     a   I</span><br><span class="line">            4       8     2     b   I</span><br><span class="line">            6       6     3     c   I</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我相信足够熟悉Java的读者已经能够大致看懂这样的字节码文件了。下面会以此字节码文件为例对内容进行说明。</p>
-<h3 id="2、字节码文件分块详解"><a href="#2、字节码文件分块详解" class="headerlink" title="2、字节码文件分块详解"></a>2、字节码文件分块详解</h3><p>案例的字节码文件可以明显的分成几个部分：</p>
-<ul>
-<li>类信息的声明，包括完整名称，版本，访问控制等信息。</li>
-<li>常量池，这一块通常不需要自行控制，但是仔细去看能品出不少有意思的东西。</li>
-<li>构造方法，本类中包含一个无参构造方法。</li>
-<li>成员方法，本类中包含一个public int clac()方法。</li>
-<li>在方法中，包含执行字节码Code部分， LocalVariableTable本地变量表部分。其实应该还有一部分StackMap，但是在本案例中没有涉及。</li>
-<li>LineNumberTable是从源码编译到字节码保存源码代码行数信息的debug信息，在输出错误栈的时候能够精确到出错的行数就是它的功劳。在我们整篇教程中都不会用到，所以就忽略掉吧！</li>
-</ul>
-<p>下面一个一个的来分析这些部分的内容。</p>
-<h4 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public class com.xiaojukeji.aya.AsmExample</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br></pre></td></tr></table></figure>
-
-<p>在这一部分，首先可以看到类名称，如果该类有继承，还会包含extends xxx的信息。</p>
-<p>之后是minor version 和 major version，表示支持的Java版本，52代表Java8。前后版本依次加减1自行类推。</p>
-<p>flags是访问控制信息，可以看到ACC_PUBLIC和ACC_SUPER，表示这是一个public的类。ACC_SUPER用来表示如何调用父类的方法，涉及到后续的invokespecial和invokeonvirtual等调用方法的指令。</p>
-<h4 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Constant pool:</span><br><span class="line">   #1 &#x3D; Methodref          #3.#19         &#x2F;&#x2F; java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 &#x3D; Class              #20            &#x2F;&#x2F; com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">   #3 &#x3D; Class              #21            &#x2F;&#x2F; java&#x2F;lang&#x2F;Object</span><br><span class="line">   #4 &#x3D; Utf8               &lt;init&gt;</span><br><span class="line">   #5 &#x3D; Utf8               ()V</span><br><span class="line">   #6 &#x3D; Utf8               Code</span><br><span class="line">   #7 &#x3D; Utf8               LineNumberTable</span><br><span class="line">   #8 &#x3D; Utf8               LocalVariableTable</span><br><span class="line">   #9 &#x3D; Utf8               this</span><br><span class="line">  #10 &#x3D; Utf8               Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">  #11 &#x3D; Utf8               calc</span><br><span class="line">  #12 &#x3D; Utf8               ()I</span><br><span class="line">  #13 &#x3D; Utf8               a</span><br><span class="line">  #14 &#x3D; Utf8               I</span><br><span class="line">  #15 &#x3D; Utf8               b</span><br><span class="line">  #16 &#x3D; Utf8               c</span><br><span class="line">  #17 &#x3D; Utf8               SourceFile</span><br><span class="line">  #18 &#x3D; Utf8               AsmExample.java</span><br><span class="line">  #19 &#x3D; NameAndType        #4:#5          &#x2F;&#x2F; &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #20 &#x3D; Utf8               com&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample</span><br><span class="line">  #21 &#x3D; Utf8               java&#x2F;lang&#x2F;Object</span><br></pre></td></tr></table></figure>
-
-<p>常量池用来保存常量，在后续的字节码中所需的常量都可以通过常量池序号来引用。可以看到常量池中的常量也有不同的类型。不仅仅是我们在程序中涉及的常量值，还包括类、方法、参数列表等信息也是作为常量保存在常量池中的。</p>
-<h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public com.xiaojukeji.aya.AsmExample();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack&#x3D;1, locals&#x3D;1, args_size&#x3D;1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  &#x2F;&#x2F; Method java&#x2F;lang&#x2F;Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 3: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br></pre></td></tr></table></figure>
-
-<p>构造方法和普通方法的声明并没有什么差别，别看在反编译出来的声明是<br><code>public com.xiaojukeji.aya.AsmExample();</code>，这只是给人看的。</p>
-<p>构造方法的真实声明并不叫<code>public AsmExample()</code>，而是<code>public void &lt;init&gt;()</code></p>
-<p>descriptor这个部分才是方法的入参和返回值的真实声明，可以看到它就是一个返回为void的方法。</p>
-<p>在构造方法中，需要调用父类的构造方法，#1代表常量池中编号为1的常量，向上去翻可以看到#1是<code>java/lang/Object.&quot;&lt;init&gt;&quot;:()V</code>，即为Object类的构造方法。</p>
-<p>当我们自己编写字节码的时候，这种无参构造方法就需要自己来手动编写了，不会有编译器来贴心的帮你生成了。</p>
-<h4 id="成员方法"><a href="#成员方法" class="headerlink" title="成员方法"></a>成员方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public int calc();</span><br><span class="line">    descriptor: ()I</span><br><span class="line">    flags: ACC_PUBLIC</span><br></pre></td></tr></table></figure>
-
-<p>很简单的声明，public方法，输入为空，输出为int。（I代表未装箱的int类型）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Code:</span><br><span class="line">      stack&#x3D;3, locals&#x3D;4, args_size&#x3D;1</span><br><span class="line">         0: iconst_3</span><br><span class="line">         1: istore_1</span><br><span class="line">         2: iconst_4</span><br><span class="line">         3: istore_2</span><br><span class="line">         4: iconst_5</span><br><span class="line">         5: istore_3</span><br><span class="line">         6: iload_1</span><br><span class="line">         7: iload_2</span><br><span class="line">         8: iload_3</span><br><span class="line">         9: imul</span><br><span class="line">        10: iadd</span><br><span class="line">        11: ireturn</span><br></pre></td></tr></table></figure>
-
-<p>这里有三个值：<code>stack=3</code>, <code>locals=4</code>, <code>args_size=1</code></p>
-<p>stack表示在本方法中最大的栈深度。这个3的来源在于第6-8行的三个iload指令，向栈中推入了三个数字。</p>
-<p>locals表示在本方法中的本地变量表最大大小。在本案例中可以在后面的本地变量表中看到这四个变量</p>
-<p>args_size表示输入的参数个数，虽然声明的输入为空，但是还有一个<code>this</code>变量作为默认输入。除了静态方法之外，本地变量表的第一个变量都应当是当前类。</p>
-<p>在本案例中涉及到的指令如下：</p>
-<ul>
-<li>iconst_n： 将值为n的int型常量入栈</li>
-<li>istore_n：将int型数值保存到序号为n的本地变量中，出栈</li>
-<li>iload_n： 将序号为n的int型本地变量入栈</li>
-<li>imul: 将栈顶两个元素相乘，结果入栈</li>
-<li>iadd: 将栈顶两个元素相加，结果入栈</li>
-<li>ireturn: return操作，返回栈顶的int型变量。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LocalVariableTable:</span><br><span class="line">    Start  Length  Slot  Name   Signature</span><br><span class="line">        0      12     0  this   Lcom&#x2F;xiaojukeji&#x2F;aya&#x2F;AsmExample;</span><br><span class="line">        2      10     1     a   I</span><br><span class="line">        4       8     2     b   I</span><br><span class="line">        6       6     3     c   I</span><br></pre></td></tr></table></figure>
-
-<p>本地变量表包含5列：</p>
-<ul>
-<li>start ：该变量作用域的起始行数。</li>
-<li>end   ：该变量作用域的终止行数。</li>
-<li>Slot  ：该变量的“槽位”，即序号。注意该序号可以是不连续的。</li>
-<li>Name  ：该变量的名称</li>
-<li>Signature ： 该变量的类型声明</li>
-</ul>
-<p>额外的，如果包含泛型，在变量表中还会以注释的形式显示出泛型信息。注意只是显示，不是以注释方式添加……</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在本节中，简单的了解了字节码文件的结构和Java执行字节码的原理。ASM框架的目的就是通过程序生成一个可执行的字节码。也就是我们要“手写”一段如上的字节码。</p>
-<p>从某种意义上来讲，写字节码和写java文件是基本一致的。就是更换了一种语言而已。只要按照规定的格式写好字节码，JVM就可以读取并执行。我们的目标也就达到了。</p>
-<p>如果有希望更深入理解字节码的同学，可以去学习《深入理解JVM》这本经典名著。其中有更偏重于底层规范的描述。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/asm/ASM%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aya的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/asm/ASM%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95/" class="post-title-link" itemprop="url">ASM笔记目录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-13 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-13T11:53:09+08:00">2020-10-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-26 10:37:18" itemprop="dateModified" datetime="2020-10-26T10:37:18+08:00">2020-10-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li>前言</li>
-<li>一、Java字节码简要基础知识</li>
-<li>二、简单的Hello world入门</li>
-<li>三、数据类型和操作指令</li>
-<li>四、类和方法</li>
-<li>五、逻辑控制-分支和循环</li>
-<li>结语</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>近期因工作需要，开始研究Java字节码操作相关的知识。</p>
-<p>但是上网搜索了很多资料，都没有一个成体系的step-to-step的教程。一路上自己踩了很多的坑。于是决定自己整理一份资料以飨来者。</p>
-<p>本系列教程定位为入门教程，以实用为第一要务，并没有深入研究Java字节码的机制。</p>
-<p>教程的最终目标是可以根据本教程生成基础的Java字节码程序，并且可以在OpenJdk下运行。其中包含大量凑合的、不精确的但是可以执行的方案、困难部分的替代方案、冗余和重复的代码等属于正常情况。</p>
-<p>对Java字节码有深入学习欲望的读者可以在本教程的基础上进行进一步的学习。</p>
-<h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><p>字节码技术可以说是提升框架代码执行效率的最终手段之一，有很多高效的框架都有字节码技术的应用。</p>
-<p>字节码技术提升效率的本质是将Java过深的调用栈拍平，减少一些重复的逻辑路线。因为通用性的框架代码必然消耗很多的代码量和执行时间来进行通用性的兼容，通过字节码技术在编译阶段解决兼容问题，一次编译多次执行，有效提升代码的执行效率。</p>
-<p>注意上文有几个关键字：重复，通用，执行效率。</p>
-<p>字节码技术的局限也就在此，必须是重复的、有通用性的代码，才值得通过字节码技术，通过牺牲编译效率的代价，提升执行效率。</p>
-<p>而且，并不是说用字节码生成的程序就一定比java编译的快，恰恰相反，其实在绝大部分情况下，Java的编译器比你聪明多了。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/asm/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1071,6 +1037,9 @@
 
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -1113,10 +1082,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -1127,7 +1096,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">John Doe</p>
+    <img class="site-author-image" itemprop="image" alt="Aya Shi"
+      src="/image/icon.png">
+  <p class="site-author-name" itemprop="name">Aya Shi</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -1135,23 +1106,30 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">categories</span>
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">tags</span>
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
         <a href="https://github.com/zzbkszd" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzbkszd" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zzbkszd@163.com" title="E-Mail → mailto:zzbkszd@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
       </span>
   </div>
 
@@ -1180,9 +1158,9 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">John Doe</span>
+  <span class="author" itemprop="copyrightHolder">Aya Shi</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
         
