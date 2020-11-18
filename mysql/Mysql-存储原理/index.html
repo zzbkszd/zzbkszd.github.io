@@ -17,26 +17,26 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"shizhida.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="数据存储Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。 MyISAMMyISAM引擎的存储特性为，每个表保存为">
 <meta property="og:type" content="article">
 <meta property="og:title" content="(Mysql) 三、存储方式和索引原理">
-<meta property="og:url" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/index.html">
-<meta property="og:site_name" content="Aya的Blog">
+<meta property="og:url" content="http://shizhida.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Aya的技术笔记">
 <meta property="og:description" content="数据存储Mysql的一大特点就是插件式的存储引擎。可以方便的切换不同的存储引擎来支持不同的存储特性。最常见的有两种：MyISAM和InnnoDB。在Mysql5.5及以前，MyISAM是Mysql的默认存储引擎，而在之后，默认的存储引擎替换成了InnoDB。不同的存储引擎在磁盘上存储的形式也各有不同，下面来看一下有代表性的两个引擎的存储结构。 MyISAMMyISAM引擎的存储特性为，每个表保存为">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
+<meta property="og:image" content="http://shizhida.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
 <meta property="article:published_time" content="2020-11-01T03:53:09.000Z">
 <meta property="article:modified_time" content="2020-11-05T02:08:28.773Z">
 <meta property="article:author" content="Aya Shi">
 <meta property="article:tag" content="MYSQL">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
+<meta name="twitter:image" content="http://shizhida.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/b+tree.png">
 
-<link rel="canonical" href="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
+<link rel="canonical" href="http://shizhida.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>(Mysql) 三、存储方式和索引原理 | Aya的Blog</title>
+  <title>(Mysql) 三、存储方式和索引原理 | Aya的技术笔记</title>
   
 
 
@@ -109,7 +109,7 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Aya的Blog</h1>
+      <h1 class="site-title">Aya的技术笔记</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -173,7 +173,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://shizhida.com/mysql/Mysql-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/image/icon.png">
@@ -182,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aya的Blog">
+      <meta itemprop="name" content="Aya的技术笔记">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">

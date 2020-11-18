@@ -17,32 +17,34 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"shizhida.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="综述分治思想是算法领域非常重要和常见的思路，而几乎所有的分治算法都可以转换成一颗树的结构。在查询问题中，这种树则一般被称为查找树。 查找树的优点在于查询效率较高，以二叉树为例，其平均时间复杂度为O(logn)，在查询海量数据时也可以拥有很不错的查询速度。 本章将会通过一步步的演进来详细阐述当前常见的几种查找树及其实现。包括普通二叉树，平衡二叉树，红黑树，B-TREE等。 树的搜索是一件很简单的事情">
 <meta property="og:type" content="article">
 <meta property="og:title" content="(算法) 查找树详解">
-<meta property="og:url" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/index.html">
-<meta property="og:site_name" content="Aya的Blog">
+<meta property="og:url" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/index.html">
+<meta property="og:site_name" content="Aya的技术笔记">
 <meta property="og:description" content="综述分治思想是算法领域非常重要和常见的思路，而几乎所有的分治算法都可以转换成一颗树的结构。在查询问题中，这种树则一般被称为查找树。 查找树的优点在于查询效率较高，以二叉树为例，其平均时间复杂度为O(logn)，在查询海量数据时也可以拥有很不错的查询速度。 本章将会通过一步步的演进来详细阐述当前常见的几种查找树及其实现。包括普通二叉树，平衡二叉树，红黑树，B-TREE等。 树的搜索是一件很简单的事情">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bin-tree.png">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bintree-array.png">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/avl_single_rotate.png">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/avl_double_rotate.png">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_case3.png">
-<meta property="og:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_case45.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bin-tree.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bintree-array.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/avl_single_rotate.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/avl_double_rotate.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_case3.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_case45.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_delete_case_2.png">
+<meta property="og:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/rb_delete_case_56.png">
 <meta property="article:published_time" content="2020-11-01T03:53:09.000Z">
-<meta property="article:modified_time" content="2020-11-11T11:35:17.470Z">
+<meta property="article:modified_time" content="2020-11-18T03:40:47.516Z">
 <meta property="article:author" content="Aya Shi">
 <meta property="article:tag" content="算法">
 <meta property="article:tag" content="树">
 <meta property="article:tag" content="查找">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bin-tree.png">
+<meta name="twitter:image" content="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/bin-tree.png">
 
-<link rel="canonical" href="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/">
+<link rel="canonical" href="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/">
 
 
 <script id="page-configurations">
@@ -55,7 +57,7 @@
   };
 </script>
 
-  <title>(算法) 查找树详解 | Aya的Blog</title>
+  <title>(算法) 查找树详解 | Aya的技术笔记</title>
   
 
 
@@ -115,7 +117,7 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Aya的Blog</h1>
+      <h1 class="site-title">Aya的技术笔记</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -179,7 +181,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="http://shizhida.com/algo/ALGO-%E6%9F%A5%E6%89%BE%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/image/icon.png">
@@ -188,7 +190,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aya的Blog">
+      <meta itemprop="name" content="Aya的技术笔记">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -209,7 +211,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-11 19:35:17" itemprop="dateModified" datetime="2020-11-11T19:35:17+08:00">2020-11-11</time>
+                <time title="修改时间：2020-11-18 11:40:47" itemprop="dateModified" datetime="2020-11-18T11:40:47+08:00">2020-11-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,8 +307,10 @@
 <li>每个红色节点必须有两个黑色的子节点（红色节点的父节点不能是红色）</li>
 <li>从任意节点到每个叶子的所有简单路径都包含相同数目的黑色节点（注意叶子是指空节点，也算一个黑色）</li>
 </ul>
+<p>红黑树的特点是由第五条保证的，在极端情况下，最长路径和最短路径的长度差距不会超过一倍。也就是一条路径上全是黑色，另一条路径上全是红黑相间。这种性质保证了红黑树的平均查询效率也可以达到O(logn)。</p>
 <p>不过简单来说，不作学术分析，前三条基本是废话，第五条照着做就行了，我们唯一需要关心的就是第四条的情况，即两个红色节点不能相邻。</p>
-<h3 id="插入修正"><a href="#插入修正" class="headerlink" title="插入修正"></a>插入修正</h3><p>首先我们设定新插入的节点N的颜色永远是红色，然后在对红黑树进行修正的时候，我们需要关心新节点N，父节点P，祖父节点G和叔父节点U四个位置。</p>
+<h3 id="插入修正"><a href="#插入修正" class="headerlink" title="插入修正"></a>插入修正</h3><p>首先我们设定新插入的节点N的颜色永远是红色。其实就是这个设定，最终保证了红黑树的第五条特性。</p>
+<p>在对红黑树进行修正的时候，我们需要关心新节点N，父节点P，祖父节点G和叔父节点U四个位置。</p>
 <p>很显然的，先排除2种特殊情况：</p>
 <ul>
 <li>N是根节点，直接置为黑色</li>
@@ -316,13 +320,38 @@
 <ul>
 <li>P是黑色，则没有问题，不需要处理。</li>
 </ul>
-<p>然后，我们来看普遍情况下的几种破坏红黑树规则的情况：</p>
-<h4 id="1、父节点和叔父节点都是红色节点"><a href="#1、父节点和叔父节点都是红色节点" class="headerlink" title="1、父节点和叔父节点都是红色节点"></a>1、父节点和叔父节点都是红色节点</h4><p>此时，祖父，父，子三层节点的颜色依次是黑、红、红。那么想要让它们符合红黑树的要求，只要让颜色变成红、黑、红即可，即将父节点置为黑色，将祖父节点置为红色。然后再从祖父节点依次向上递归进行修正即可。如果祖父节点是根节点，最后还要将祖父节点设置为黑色，三层依次为黑、黑、红也是符合红黑树的要求的。</p>
+<p>然后，我们来看普遍情况下的两种破坏红黑树规则的情况：</p>
+<h4 id="1、父节点和叔父节点都是红色节点"><a href="#1、父节点和叔父节点都是红色节点" class="headerlink" title="1、父节点和叔父节点都是红色节点"></a>1、父节点和叔父节点都是红色节点</h4><p>这种情况，其实不是树不平衡，而是颜色涂错了。</p>
+<p>此时，祖父，父，子三层节点的颜色依次是黑、红、红。那么想要让它们符合红黑树的要求，只要让颜色变成红、黑、红即可，即将父节点置为黑色，将祖父节点置为红色。然后再从祖父节点依次向上递归进行修正即可。如果祖父节点是根节点，最后还要将祖父节点设置为黑色，三层依次为黑、黑、红也是符合红黑树的要求的。</p>
 <p><img src="rb_case3.png"></p>
-<h3 id="2、父节点是红色，叔父节点是黑色"><a href="#2、父节点是红色，叔父节点是黑色" class="headerlink" title="2、父节点是红色，叔父节点是黑色"></a>2、父节点是红色，叔父节点是黑色</h3><p>此时，因为在父节点一层的颜色不统一，就不能简单的通过修改颜色来进行调整。</p>
-<p>那么要怎么样才能修改颜色呢？很简单，让父节点一层的颜色统一起来。具体采取的方法就是旋转。通过在祖父节点上进行左、右旋，配合节点颜色的变更，即可完成调整。</p>
+<h3 id="2、父节点是红色，叔父节点是黑色"><a href="#2、父节点是红色，叔父节点是黑色" class="headerlink" title="2、父节点是红色，叔父节点是黑色"></a>2、父节点是红色，叔父节点是黑色</h3><p>这种情况其实才是和AVL树中的不平衡情况对应的，只要和AVL树一样进行旋转，再调整颜色就可以了。</p>
 <p>此处回想AVL树中的旋转，分为单旋和双旋，在AVL中也是一样的：同向插入时可以使用单旋实现调整，交叉插入时可以使用双旋实现调整。然后改变P节点和G节点的颜色，就可以令整个红黑树符合规范。</p>
 <p><img src="rb_case45.png"></p>
+<p>出于保险起见，可以在调整的最后无论什么情况都将根节点置为黑色。以保证满足红黑树“根节点是黑色”的要求。</p>
+<h3 id="删除修正"><a href="#删除修正" class="headerlink" title="删除修正"></a>删除修正</h3><p>红黑树的删除要比插入更复杂一点。</p>
+<p>首先我们假设要删除及删除后要替换上节点都是N，（也就是要删除的这个位置就是N，不管是哪个节点）下面是三种替换的情况：</p>
+<ul>
+<li>N的左右子节点均不为空，则使用右子树最小值替换N的值，然后删除右子树最小值对应的节点</li>
+<li>N的颜色为红色，则使用子节点替换N节点即可</li>
+<li>N的颜色为黑色，且N的子节点颜色为红色，则将子节点颜色置为黑色，然后替换N节点即可。</li>
+</ul>
+<p>最大的麻烦在后面：当N节点和子节点都为黑色时，我们同样首先替换N节点，但是之后需要对树进行修复，也就是又要面临各种情况的折磨了……</p>
+<p>同样的，我们需要定义：N的父节点为P， 兄弟节点为S。 当N是根节点时，不需要做任何处理。在其它情况下则需要进行各种处理。</p>
+<h4 id="1、兄弟节点为红色"><a href="#1、兄弟节点为红色" class="headerlink" title="1、兄弟节点为红色"></a>1、兄弟节点为红色</h4><p>此时，如果N是左节点则进行左旋，N是右节点则进行右旋。然后交换S和P的颜色。</p>
+<p>因为S是红色，所以S的子节点必然都是黑色。旋转后，N有了一个红色的父节点和一个黑色的兄弟节点。</p>
+<p><img src="rb_delete_case_2.png"></p>
+<p>完成转换后，N节点的情况会符合后续的情况，递归调用修复即可。</p>
+<h4 id="2、父节点、兄弟节点和兄弟节点的子节点都是黑色"><a href="#2、父节点、兄弟节点和兄弟节点的子节点都是黑色" class="headerlink" title="2、父节点、兄弟节点和兄弟节点的子节点都是黑色"></a>2、父节点、兄弟节点和兄弟节点的子节点都是黑色</h4><p>此时将兄弟节点S置为红色即可。</p>
+<p>这是因为N所在的路径上删除了一个原本存在的节点，所有使得本侧路径通过的黑色节点少了一个。将S置为红色后S所在的路径和N所在的路径的黑色节点数量就相等了。</p>
+<p>完成调整后需要在父节点P上递归调用修复。</p>
+<h4 id="3、父节点是红色，兄弟节点和兄弟节点的子节点都是黑色"><a href="#3、父节点是红色，兄弟节点和兄弟节点的子节点都是黑色" class="headerlink" title="3、父节点是红色，兄弟节点和兄弟节点的子节点都是黑色"></a>3、父节点是红色，兄弟节点和兄弟节点的子节点都是黑色</h4><p>此时调换父节点和兄弟节点的颜色即可。</p>
+<p>此时的情况同样是因为S侧的路径上黑节点多于N侧，交换颜色后，S侧路径上的黑节点数量不变，N侧的黑节点数量增加了1（即父节点被设为黑色）。达到平衡。</p>
+<h4 id="4、兄弟节点是黑色，兄弟节点的子节点有红色"><a href="#4、兄弟节点是黑色，兄弟节点的子节点有红色" class="headerlink" title="4、兄弟节点是黑色，兄弟节点的子节点有红色"></a>4、兄弟节点是黑色，兄弟节点的子节点有红色</h4><p>这种情况又再次接近于AVL树的单旋和双旋情况。</p>
+<p>首先我们定义兄弟节点的“外侧”子节点，即若S节点为P节点的右节点，则外侧子节点为S的右侧子节点，同理，若S为P的左子节点，则外侧子节点为S的左节点。对应的S的另一个子节点为“内侧”子节点。</p>
+<p>若外侧子节点不为红，则S的内侧子节点必为红。此时需要对S节点上进行旋转，并交换S和内侧子节点的颜色。使得红色节点转移到外侧。（双旋）即可满足下面的条件：</p>
+<p>当外侧子节点为红色时，则在P节点上进行旋转并交换S和P的颜色，并将S的外侧红色子节点置为黑色即可。（单旋）</p>
+<p><img src="rb_delete_case_56.png"></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>到这里，关于常用的二叉搜索树的实现就基本完成了。在二叉搜索树的实现中，树的修复是一件很麻烦的事情，建议有耐心的同学按照wiki百科上关于不同树的各种情况下修复和旋转的描述，依次自行实现一遍，对于树的构建会有更为深入的理解。</p>
 <hr>
 <p>未完待续……</p>
 
@@ -407,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">删除节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%8EAVL%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">平衡二叉树与AVL树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%97%8B"><span class="nav-number">3.1.</span> <span class="nav-text">单旋</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%97%8B"><span class="nav-number">3.2.</span> <span class="nav-text">双旋</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%AB%98%E5%BA%A6"><span class="nav-number">3.3.</span> <span class="nav-text">更新高度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%B9%B3%E8%A1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">重平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">3.5.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">4.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E4%BF%AE%E6%AD%A3"><span class="nav-number">4.1.</span> <span class="nav-text">插入修正</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E5%92%8C%E5%8F%94%E7%88%B6%E8%8A%82%E7%82%B9%E9%83%BD%E6%98%AF%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9"><span class="nav-number">4.1.1.</span> <span class="nav-text">1、父节点和叔父节点都是红色节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E6%98%AF%E7%BA%A2%E8%89%B2%EF%BC%8C%E5%8F%94%E7%88%B6%E8%8A%82%E7%82%B9%E6%98%AF%E9%BB%91%E8%89%B2"><span class="nav-number">4.2.</span> <span class="nav-text">2、父节点是红色，叔父节点是黑色</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">删除节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%8EAVL%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">平衡二叉树与AVL树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%97%8B"><span class="nav-number">3.1.</span> <span class="nav-text">单旋</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%97%8B"><span class="nav-number">3.2.</span> <span class="nav-text">双旋</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%AB%98%E5%BA%A6"><span class="nav-number">3.3.</span> <span class="nav-text">更新高度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%B9%B3%E8%A1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">重平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">3.5.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">4.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E4%BF%AE%E6%AD%A3"><span class="nav-number">4.1.</span> <span class="nav-text">插入修正</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E5%92%8C%E5%8F%94%E7%88%B6%E8%8A%82%E7%82%B9%E9%83%BD%E6%98%AF%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9"><span class="nav-number">4.1.1.</span> <span class="nav-text">1、父节点和叔父节点都是红色节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E6%98%AF%E7%BA%A2%E8%89%B2%EF%BC%8C%E5%8F%94%E7%88%B6%E8%8A%82%E7%82%B9%E6%98%AF%E9%BB%91%E8%89%B2"><span class="nav-number">4.2.</span> <span class="nav-text">2、父节点是红色，叔父节点是黑色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%BF%AE%E6%AD%A3"><span class="nav-number">4.3.</span> <span class="nav-text">删除修正</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E4%B8%BA%E7%BA%A2%E8%89%B2"><span class="nav-number">4.3.1.</span> <span class="nav-text">1、兄弟节点为红色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E3%80%81%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E5%92%8C%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E7%9A%84%E5%AD%90%E8%8A%82%E7%82%B9%E9%83%BD%E6%98%AF%E9%BB%91%E8%89%B2"><span class="nav-number">4.3.2.</span> <span class="nav-text">2、父节点、兄弟节点和兄弟节点的子节点都是黑色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E3%80%81%E7%88%B6%E8%8A%82%E7%82%B9%E6%98%AF%E7%BA%A2%E8%89%B2%EF%BC%8C%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E5%92%8C%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E7%9A%84%E5%AD%90%E8%8A%82%E7%82%B9%E9%83%BD%E6%98%AF%E9%BB%91%E8%89%B2"><span class="nav-number">4.3.3.</span> <span class="nav-text">3、父节点是红色，兄弟节点和兄弟节点的子节点都是黑色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E3%80%81%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E6%98%AF%E9%BB%91%E8%89%B2%EF%BC%8C%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9%E7%9A%84%E5%AD%90%E8%8A%82%E7%82%B9%E6%9C%89%E7%BA%A2%E8%89%B2"><span class="nav-number">4.3.4.</span> <span class="nav-text">4、兄弟节点是黑色，兄弟节点的子节点有红色</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
