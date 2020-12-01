@@ -165,6 +165,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shizhida.com/asm/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的技术笔记">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/asm/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" class="post-title-link" itemprop="url">(ASM) 三、数据类型和操作指令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-20 11:53:09" itemprop="dateCreated datePublished" datetime="2020-10-20T11:53:09+08:00">2020-10-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-29 17:32:46" itemprop="dateModified" datetime="2020-10-29T17:32:46+08:00">2020-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ASM%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">ASM实战</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>在JVM中，数据类型与我们的Java代码有所不同。可以分为两个大类：<code>基本类型</code>和<code>引用类型</code>。</p>
+<p>再次回想Java的装箱机制，比如int与Integer, float与Float，前者就是基本类型，后者则是一个引用类型。</p>
+<p>在java中，基本类型包含int,float,double,boolean,byte,char,short等。但是在JVM中，基本类型只有以下四种：</p>
+<ul>
+<li>int 用I表示</li>
+<li>float 用F表示</li>
+<li>long 用L表示</li>
+<li>double 用D表示</li>
+</ul>
+<p>其它的数据类型都会被转变为基本类型进行操作，比如boolean，虽然在声明中用Z表示，但是操作时都是按照int类型进行操作。</p>
+<p>需要注意的是，在对基本类型进行字节码操作时，如果需要装箱、拆箱操作，需要手动编写字节码调用对应的方法。否则会出现数据类型错误。</p>
+<p>引用类型是一个统称，除了以上四种基本类型之外的变量都是引用类型，包括字符串、对象实例等变量。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/asm/ASM-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://shizhida.com/asm/ASM-%E7%AE%80%E5%8D%95%E7%9A%84Hello%20World%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -491,20 +583,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
