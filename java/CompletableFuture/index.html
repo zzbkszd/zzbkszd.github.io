@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shizhida.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概述CompletableFuture是从Java 1.8 开始引入的异步任务处理类。它实现了Future接口和CompletionStage接口。前者在Java1.5中引入，在线程池的应用中已经简单介绍过。后者才是核心的特性。 CompletionStage接口从Java1.8开始引入，提供了多个Future之间的多种组合，提供了异步任务的“编排”功能。使得我们可以非常灵活的进行异步编程。 所以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(异步)CompletableFuture使用概述">
+<meta property="og:url" content="http://shizhida.com/java/CompletableFuture/index.html">
+<meta property="og:site_name" content="Aya的技术笔记">
+<meta property="og:description" content="概述CompletableFuture是从Java 1.8 开始引入的异步任务处理类。它实现了Future接口和CompletionStage接口。前者在Java1.5中引入，在线程池的应用中已经简单介绍过。后者才是核心的特性。 CompletionStage接口从Java1.8开始引入，提供了多个Future之间的多种组合，提供了异步任务的“编排”功能。使得我们可以非常灵活的进行异步编程。 所以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://shizhida.com/java/CompletableFuture/completablefuture1.png">
+<meta property="article:published_time" content="2020-12-27T03:53:09.000Z">
+<meta property="article:modified_time" content="2020-12-30T09:40:29.754Z">
+<meta property="article:author" content="Aya Shi">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="异步">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shizhida.com/java/CompletableFuture/completablefuture1.png">
+
+<link rel="canonical" href="http://shizhida.com/java/CompletableFuture/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(异步)CompletableFuture使用概述 | Aya的技术笔记</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?29b79bcfc487303136c79e51d766681d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Aya的技术笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shizhida.com/java/CompletableFuture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/icon.png">
+      <meta itemprop="name" content="Aya Shi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aya的技术笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (异步)CompletableFuture使用概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-27 11:53:09" itemprop="dateCreated datePublished" datetime="2020-12-27T11:53:09+08:00">2020-12-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-30 17:40:29" itemprop="dateModified" datetime="2020-12-30T17:40:29+08:00">2020-12-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>CompletableFuture是从Java 1.8 开始引入的异步任务处理类。它实现了Future接口和CompletionStage接口。前者在Java1.5中引入，在线程池的应用中已经简单介绍过。后者才是核心的特性。</p>
+<p>CompletionStage接口从Java1.8开始引入，提供了多个Future之间的多种组合，提供了异步任务的“编排”功能。使得我们可以非常灵活的进行异步编程。</p>
+<p>所以使用CompletableFuture，更准确的说，就是熟悉CompletionStage这个接口的各种用法。</p>
+<a id="more"></a>
+
+<h1 id="同步、异步与执行顺序"><a href="#同步、异步与执行顺序" class="headerlink" title="同步、异步与执行顺序"></a>同步、异步与执行顺序</h1><p>要熟悉异步编程，首先需要分清的就是我们的程序究竟以什么样的顺序逻辑在执行。</p>
+<p>CompletableFuture提供了很多种任务编排的方式，大部分接口提供都形如：<code>thenApply</code>和<code>thenApplyAsync</code>两个形式，即同步方法和异步方法。顾名思义，同步方法就是指两个任务顺序执行，而异步方法则是指两个任务异步执行。</p>
+<p>根据惯例，空口无凭，我们来举个栗子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">acceptAndAsync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> base = System.currentTimeMillis();</span><br><span class="line">    CompletableFuture&lt;Void&gt; start = CompletableFuture.runAsync(()-&gt;&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;task 1 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    start.thenAccept((v)-&gt;&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;task 2 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    start.thenAccept(v-&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;task 4 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    start.thenAcceptAsync(v-&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;task 3 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        start.get();</span><br><span class="line">        System.out.println(<span class="string">&quot;finish at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这段程序的输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">task 1 at 73</span><br><span class="line">task 2 at 1073</span><br><span class="line">task 4 at 2074</span><br><span class="line">task 3 at 2074</span><br><span class="line">finish at 2074</span><br></pre></td></tr></table></figure>
+
+<p>在这个程序中，我们包含了四个异步任务，每个任务都打印了自己的完成时间。</p>
+<ul>
+<li>第一个任务，打印了起始时间。</li>
+<li>第二个任务，和第四个任务是两个同步任务，可以看到他们的时间是连续的，说明这两个任务是顺序执行的。第二个任务阻塞了后续任务的执行。</li>
+<li>第三个任务是插在其中的一个异步任务，可以看到它的执行时间和第四个任务是相同的，说明这两个任务是异步执行的，执行第三个任务的时候并没有阻塞第四个任务的执行。</li>
+</ul>
+<p><em>可是！事情并没有这么简单！</em></p>
+<p>这里有一个需要注意的点：所有的任务都是以<code>start</code>这个CompletableFuture作为基准。最终使用<code>start.get()</code>方法来阻塞等待结果，只能等待到start中所有同步任务的结果。</p>
+<p>如果我们交换了任务三和任务四的顺序，最终的输出结果会是如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">task 1 at 66</span><br><span class="line">task 2 at 1067</span><br><span class="line">task 4 at 2068</span><br><span class="line">finish at 2068</span><br></pre></td></tr></table></figure>
+
+<p>会发现任务三的结果消失了。这是因为在任务三是异步执行的，不会阻塞start的完成。</p>
+<p>为了获得任务三的结果，我们需要使用一个新的CompletableFuture来接收任务3的结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture end = start.thenAcceptAsync(v-&gt; &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 3 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样我们最后执行<code>end.get()</code>，就可以输出所有任务的结果，即阻塞到了全部任务完成。</p>
+<p>而神奇的是，即使我们以<code>1,3,2,4</code>的顺序编写任务，最终以<code>end.get()</code>来阻塞等待，也可以等待到所有任务都执行完毕，不过执行结果有所变化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">task 1 at 90</span><br><span class="line">task 2 at 1091</span><br><span class="line">task 3 at 1091</span><br><span class="line">task 4 at 2092</span><br><span class="line">finish at 2092</span><br></pre></td></tr></table></figure>
+
+<p>如果我们在任务三的返回结果<code>end</code>之后再增加一个任务五，就可以发现，任务五的执行时间是在任务四完成之后才继续执行。无论同步异步的方法皆是如此。</p>
+<p>可能读者看到这里已经懵了，这个玩意到底是怎么个顺序去执行的？</p>
+<p>不要急，我们来做一个新的案例，这个案例中包含了六个任务，为了节约空间，我们省去异常处理的部分：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">acceptAndAsync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> base = System.currentTimeMillis();</span><br><span class="line">    CompletableFuture&lt;Void&gt; start = CompletableFuture.runAsync(()-&gt;&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;task 1 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    CompletableFuture three = start.thenAcceptAsync(v-&gt; &#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 3 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    CompletableFuture two = start.thenAcceptAsync((v)-&gt;&#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 2 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    two.thenAccept(v-&gt; &#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 4 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    CompletableFuture five = three.thenAccept(v-&gt; &#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 5 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    start.thenAccept(v-&gt; &#123;</span><br><span class="line">        Thread.sleep(<span class="number">3000L</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;task 6 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;);</span><br><span class="line">    five.get(); <span class="comment">// 你可以换成程序中任意一个CompletableFuture来get，结果并不会发生变化。</span></span><br><span class="line">    System.out.println(<span class="string">&quot;finish at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先请读者仔细思考一下，这个程序会输出怎样的结果？</p>
+<p>然后我们来用一张图描述各个任务的执行情况：</p>
+<p><img src="completablefuture1.png"></p>
+<p>可以看到通过两次创建异步任务，其实六个任务分为了三个并行的序列。但是只有在最开始的任务一所在序列执行完成之后，才会执行到<code>get</code>方法。</p>
+<p>这个原理其实非常简单：因为任务一发起的同步任务是在当前线程执行的。所以同步任务会耗费当前线程的执行时间，只有当同步任务全部执行完毕后，才会执行到<code>get()</code>方法。而任务二、任务三发起的同步任务四和五，是各自在二、三的执行线程上顺序执行的，不会阻塞主线程。</p>
+<p>所以在编排任务时，一定要注意同步异步线程的耗时不同，否则会导致很多意外的执行结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture有一个join()方法，可以把Future合并到当前线程进行同步执行。</span><br></pre></td></tr></table></figure>
+
+<h1 id="异步执行线程池"><a href="#异步执行线程池" class="headerlink" title="异步执行线程池"></a>异步执行线程池</h1><p>CompletableFuture执行异步任务，是通过线程池来执行的。实际上，CompletionStage接口所有的异步方法都有重载的两种形式：<code>xxxAsync(task)</code>和<code>xxxAsync(task, executor)</code>。后者即为指定执行异步任务的线程池。</p>
+<p>如果没有指定一个线程池来执行异步任务，CompletableFuture中有两种默认的线程池来执行：<code>ForkJoinPool.commonPool()</code> 和 <code>new ThreadPerTaskExecutor()</code>。具体选择哪个，由ForkJoinPool的并发等级来确定，如果并发等级高于1，则使用<code>ForkJoinPool.commonPool()</code>，否则使用另一个。</p>
+<p><code>ThreadPerTaskExecutor</code>是一个非常简单的Executor的实现。顾名思义，它为每一个新任务都新建了一个线程。所以也很容易理解为何尽量不要使用这种形式。</p>
+<p>仍旧使用上节最后的案例来举例，在执行异步任务时指定一个大小为1的线程池：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = Executors.newFixedThreadPool(<span class="number">1</span>);</span><br><span class="line">...</span><br><span class="line">CompletableFuture three = start.thenAcceptAsync(v-&gt; &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;task 3 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;, executor);</span><br><span class="line">CompletableFuture two = start.thenAcceptAsync((v)-&gt;&#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;task 2 at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">    &#125;,executor);</span><br><span class="line">...</span><br><span class="line">five.get();</span><br><span class="line">System.out.println(<span class="string">&quot;finish at &quot;</span> + (System.currentTimeMillis()-base));</span><br><span class="line">executor.shutdown();</span><br></pre></td></tr></table></figure>
+
+<p>最终得到执行结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task 1 at 70</span><br><span class="line">task 3 at 1073</span><br><span class="line">task 5 at 2073</span><br><span class="line">task 2 at 3073</span><br><span class="line">finish at 3074</span><br><span class="line">task 4 at 4073</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，任务的执行顺序发生了变化。因为线程池大小为1，所以六个任务无法分为三个并行的序列，实际上分为了两个序列：一个耗时3秒的由任务1、6组成的主序列，和一个耗时4秒的由任务3、5、2、4组成的子序列。</p>
+<p>任务五在2秒时执行完毕，而get方法在3秒时，即主序列执行完毕后结束。最后因为线程池还在执行，所以任务四的结果在4秒时执行完毕。</p>
+<p>通过自定义线程池，可以控制异步任务的并发数，对系统资源进行优化的调度。</p>
+<h1 id="任务编排"><a href="#任务编排" class="headerlink" title="任务编排"></a>任务编排</h1><p>要了解CompletionStage的任务编排方法，首先熟悉几个单词：<code>async,apply,accept,run,both,either</code>。任务编排的方法很多，但是其实熟悉了几个关键字之后是非常好记忆和使用的。</p>
+<p>首先异步任务的<code>async</code>在本篇一开始已经进行过了介绍，以async结尾的方法都会启动一个异步任务，所以本节不再重复。</p>
+<p>具体的编排方法大家可以直接去看CompletionStage接口的源码。相信看过本节之后，只看名字也能知道不同方法的编排方式。</p>
+<p>任务的消费者有三种：</p>
+<ul>
+<li>apply ：接收一个参数，并返回另一个参数。相当于做一个转换。</li>
+<li>accept ： 接收一个参数，返回一个void，即消费。</li>
+<li>run ： 不接受参数，返回void，即只在执行顺序上有关联，而不进行传参的处理。</li>
+</ul>
+<p>而任务编排不仅是顺序的一对一，还可以支持二对一：</p>
+<ul>
+<li>both ：两个Future全部执行完毕后执行后续逻辑。</li>
+<li>either ：两个Futuer只要有一个执行完毕，就执行后续逻辑。</li>
+</ul>
+<p>下面我们用一些简单的代码来展示一下不同编排的效果。首先来看一组简单的组合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture.completedFuture(<span class="string">&quot;Hello&quot;</span>) <span class="comment">// 以常量构造一个CompletableFuture</span></span><br><span class="line">        .thenApply(h-&gt; (h + <span class="string">&quot; World&quot;</span>))     <span class="comment">// 接收一个值，操作后返回另一个值</span></span><br><span class="line">        .thenAccept(System.out::println)   <span class="comment">// 接收一个值并消费</span></span><br><span class="line">        .thenRun(()-&gt; System.out.println(<span class="string">&quot;Other task&quot;</span>)); <span class="comment">// 不接受参数，也不返回参数，自顾自的做事情。</span></span><br></pre></td></tr></table></figure>
+
+<p>这个程序会输出以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Hello World</span><br><span class="line">Other task</span><br></pre></td></tr></table></figure>
+
+<p>以上案例是最常用的，CompletableFuture的线性组合。多个任务通过apply/accept/run方法就可以线性的串成一串顺序执行。</p>
+<p>后续的案例比较复杂，我们首先需要进行一下初始化工作，构造两个耗时的任务a和b：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = Executors.newFixedThreadPool(<span class="number">2</span>);</span><br><span class="line">CompletableFuture&lt;String&gt; a = CompletableFuture.supplyAsync(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">        &#125;,executor);</span><br><span class="line">CompletableFuture&lt;String&gt; b = CompletableFuture.supplyAsync(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1500L</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot; World&quot;</span>;</span><br><span class="line">        &#125;, executor);</span><br></pre></td></tr></table></figure>
+
+<p>下面是涉及到多个任务的组合方式，具体功能就见注释吧：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// combine 只是组合，并不消费，相当于apply</span></span><br><span class="line"><span class="comment">// 传入另一个Future b，接收的值是两个Future的返回值。最后返回一个新值。</span></span><br><span class="line">a.thenCombine(b, (f1,f2) -&gt; <span class="string">&quot;Combine &quot;</span> + f1+f2).thenAccept(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// acceptBoth 同时接收两个并消费</span></span><br><span class="line"><span class="comment">// 传入另一个Future b，接收的值是两个Future的返回值。并没有返回值。</span></span><br><span class="line">a.thenAcceptBoth(b, (f1,f2) -&gt; System.out.println(<span class="string">&quot;accept both &quot;</span> + f1+f2));</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line"><span class="comment">// afterBoth，等待a,b都执行完毕后执行，输出1500，因为b需要1500ms执行完毕</span></span><br><span class="line">a.runAfterBoth(b, ()-&gt; System.out.println(<span class="string">&quot;after both cost:&quot;</span> + (System.currentTimeMillis()-start)));</span><br><span class="line"><span class="comment">// afterEither， a,b中任意一个完成后执行，输出1000，因为a只需要1000ms就执行完毕了</span></span><br><span class="line">a.runAfterEither(b, ()-&gt; System.out.println(<span class="string">&quot;after either cost:&quot;</span> + (System.currentTimeMillis()-start)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// applyToEither和thenCombine对应，acceptEither 和 thenAcceptBoth对应</span></span><br><span class="line"><span class="comment">// 这里只举一个例子，apply(combine)和accept的语义没有改变。</span></span><br><span class="line">a.applyToEither(b, s-&gt;s + <span class="string">&quot; Final&quot;</span>).thenAccept(System.out::println).join();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这两个的作用和上面的是差不多的，不过支持多个</span></span><br><span class="line"><span class="comment">// 可以通过静态方法直接对多个Future进行处理。</span></span><br><span class="line"><span class="comment">// allOf不能接收返回值，相当于增强的runAfterBoth的效果。</span></span><br><span class="line">CompletableFuture.allOf(a,b).thenRun(()-&gt; System.out.println(<span class="string">&quot;all of cost:&quot;</span> + (System.currentTimeMillis()-start)));</span><br><span class="line"><span class="comment">// anyOf可以接收一个返回值，相当于增强的acceptEither的效果</span></span><br><span class="line">CompletableFuture.anyOf(a,b).thenRun(()-&gt; System.out.println(<span class="string">&quot;any of cost:&quot;</span> + (System.currentTimeMillis()-start)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// compose的语义和apply是接近的，不过compose是处理之后再返回另一个CompletableFuture，而不是返回一个值。</span></span><br><span class="line">a.thenCompose(s-&gt; CompletableFuture.completedFuture(s + <span class="string">&quot; World Compose&quot;</span>)).thenAccept(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// a先完成，就输出了Hello，相当于accept的结束处理，可以接收抛出的异常e</span></span><br><span class="line">a.whenComplete((s, e)-&gt; System.out.println(<span class="string">&quot;when complete&quot;</span> + s));</span><br><span class="line"><span class="comment">// 后续的任务继续执行，不影响a.whenComplete的输出</span></span><br><span class="line">a.thenCombine(b, (f1,f2) -&gt; f1+f2).thenAccept(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 相当于apply的结束处理，可以接收抛出的异常e</span></span><br><span class="line">a.handle((s, e)-&gt; <span class="string">&quot;handle &quot;</span> + s).thenAccept(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 完成任务后关闭线程池。线程池会等待所有任务执行完毕后关闭，可以保证输出所有的内容</span></span><br><span class="line">executor.shutdown();</span><br></pre></td></tr></table></figure>
+
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>本章对CompletableFuture的使用进行了简要的阐述。</p>
+<p>CompletableFuture是Java异步编程中非常重要的特性，它大大简化了多个异步任务之间的调度和传参。掌握了CompletableFuture，就基本掌握了Java异步编程的八成。</p>
+<p>当然，其实更重要的，是异步编程中对于线程池的调度使用。盲目的使用异步编程而不能较好的调度线程池，往往会令最终效果适得其反。所以一定要夯实线程池的基础。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag"># 异步</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/java/%E7%BA%BF%E7%A8%8B%E6%B1%A0-%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/" rel="prev" title="(线程池)Java线程池使用概述">
+      <i class="fa fa-chevron-left"></i> (线程池)Java线程池使用概述
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E3%80%81%E5%BC%82%E6%AD%A5%E4%B8%8E%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">同步、异步与执行顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">3.</span> <span class="nav-text">异步执行线程池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%BC%96%E6%8E%92"><span class="nav-number">4.</span> <span class="nav-text">任务编排</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Aya Shi"
+      src="/image/icon.png">
+  <p class="site-author-name" itemprop="name">Aya Shi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zzbkszd" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzbkszd" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zzbkszd@163.com" title="E-Mail → mailto:zzbkszd@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Aya Shi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
